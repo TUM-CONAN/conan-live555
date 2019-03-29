@@ -5,7 +5,9 @@ import shutil
 
 class Live555Conan(ConanFile):
     name = "live555"
-    version = "1.21.0"
+    package_revision = "-r1"
+    upstream_version = "1.21.0"
+    version = "{0}{1}".format(upstream_version, package_revision)
     generators = "cmake"
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False]}
@@ -23,8 +25,8 @@ class Live555Conan(ConanFile):
         del self.settings.compiler.libcxx
 
     def source(self):
-        tools.get("https://github.com/MobotixAG/live666/archive/releases/{0}.tar.gz".format(self.version))
-        os.rename("live666-releases-" + self.version, self.source_subfolder)
+        tools.get("https://github.com/MobotixAG/live666/archive/releases/{0}.tar.gz".format(self.upstream_version))
+        os.rename("live666-releases-" + self.upstream_version, self.source_subfolder)
 
     def build(self):
         shutil.move("patches/CMakeProjectWrapper.txt", "CMakeLists.txt")
