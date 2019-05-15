@@ -19,7 +19,7 @@ msvc2017:
     - shell
     - windows
 
-clang-6:
+mint18-clang-6:
   image: ${DOCKER_ENVDEV_CLANG6}
   stage: build
   variables:
