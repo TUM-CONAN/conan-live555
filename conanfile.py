@@ -5,7 +5,7 @@ import shutil
 
 class Live555Conan(ConanFile):
     name = "live555"
-    package_revision = "-r1"
+    package_revision = "-r2"
     upstream_version = "1.21.0"
     version = "{0}{1}".format(upstream_version, package_revision)
     generators = "cmake"
@@ -24,13 +24,23 @@ class Live555Conan(ConanFile):
     def configure(self):
         del self.settings.compiler.libcxx
 
+    def requirements(self):
+        self.requires("common/1.0.0@sight/stable")
+
     def source(self):
         tools.get("https://github.com/MobotixAG/live666/archive/releases/{0}.tar.gz".format(self.upstream_version))
         os.rename("live666-releases-" + self.upstream_version, self.source_subfolder)
 
     def build(self):
+        #Import common flags and defines
+        import common
         shutil.move("patches/CMakeProjectWrapper.txt", "CMakeLists.txt")
         cmake = CMake(self)
+        
+        #Set common flags
+        cmake.definitions["CMAKE_C_FLAGS"] = common.get_c_flags()
+        cmake.definitions["CMAKE_CXX_FLAGS"] = common.get_cxx_flags()
+        
         cmake.configure(build_folder=self.build_subfolder)
         if not tools.os_info.is_windows:
             cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = "ON"
