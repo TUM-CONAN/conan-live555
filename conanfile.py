@@ -21,9 +21,6 @@ class Live555Conan(ConanFile):
     source_subfolder = "source_subfolder"
     build_subfolder = "build_subfolder"
 
-    def configure(self):
-        del self.settings.compiler.libcxx
-
     def requirements(self):
         self.requires("common/1.0.1@sight/testing")
 
@@ -38,9 +35,11 @@ class Live555Conan(ConanFile):
         shutil.move("patches/CMakeProjectWrapper.txt", "CMakeLists.txt")
         cmake = CMake(self)
 
-        # Set common flags
-        cmake.definitions["SIGHT_CMAKE_C_FLAGS"] = common.get_c_flags()
+        # Export common flags
         cmake.definitions["SIGHT_CMAKE_CXX_FLAGS"] = common.get_cxx_flags()
+        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS_RELEASE"] = common.get_cxx_flags_release()
+        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS_DEBUG"] = common.get_cxx_flags_debug()
+        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS_RELWITHDEBINFO"] = common.get_cxx_flags_relwithdebinfo()
 
         cmake.configure(build_folder=self.build_subfolder)
         if not tools.os_info.is_windows:
