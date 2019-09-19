@@ -43,7 +43,7 @@ class Live555Conan(ConanFile):
 
         if not tools.os_info.is_windows:
             cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = "ON"
-        
+
         cmake.configure()
         cmake.build()
         cmake.install()
