@@ -1,11 +1,10 @@
 from conans import ConanFile, tools, CMake
-from conans.util import files
 import os
-import shutil
+
 
 class Live555Conan(ConanFile):
     name = "live555"
-    package_revision = "-r2"
+    package_revision = "-r3"
     upstream_version = "1.21.0"
     version = "{0}{1}".format(upstream_version, package_revision)
     generators = "cmake"
@@ -21,11 +20,8 @@ class Live555Conan(ConanFile):
     source_subfolder = "source_subfolder"
     build_subfolder = "build_subfolder"
 
-    def configure(self):
-        del self.settings.compiler.libcxx
-
     def requirements(self):
-        self.requires("common/1.0.0@sight/stable")
+        self.requires("common/1.0.1@sight/stable")
 
     def source(self):
         tools.get("https://github.com/MobotixAG/live666/archive/releases/{0}.tar.gz".format(self.upstream_version))
@@ -35,16 +31,19 @@ class Live555Conan(ConanFile):
         # Import common flags and defines
         import common
 
-        shutil.move("patches/CMakeProjectWrapper.txt", "CMakeLists.txt")
+        # Generate Cmake wrapper
+        common.generate_cmake_wrapper(
+            cmakelists_path='CMakeLists.txt',
+            source_subfolder=self.source_subfolder,
+            build_type=self.settings.build_type
+        )
+
         cmake = CMake(self)
-        
-        # Set common flags
-        cmake.definitions["SIGHT_CMAKE_C_FLAGS"] = common.get_c_flags()
-        cmake.definitions["SIGHT_CMAKE_CXX_FLAGS"] = common.get_cxx_flags()
-        
-        cmake.configure(build_folder=self.build_subfolder)
+
         if not tools.os_info.is_windows:
             cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = "ON"
+
+        cmake.configure()
         cmake.build()
         cmake.install()
 
