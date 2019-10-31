@@ -4,7 +4,7 @@ import os
 
 class Live555Conan(ConanFile):
     name = "live555"
-    package_revision = "-r3"
+    package_revision = "-r4"
     upstream_version = "1.21.0"
     version = "{0}{1}".format(upstream_version, package_revision)
     generators = "cmake"
@@ -21,7 +21,7 @@ class Live555Conan(ConanFile):
     build_subfolder = "build_subfolder"
 
     def requirements(self):
-        self.requires("common/1.0.1@sight/stable")
+        self.requires("common/1.0.2@sight/testing")
 
     def source(self):
         tools.get("https://github.com/MobotixAG/live666/archive/releases/{0}.tar.gz".format(self.upstream_version))
