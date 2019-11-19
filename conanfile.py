@@ -21,7 +21,7 @@ class Live555Conan(ConanFile):
     build_subfolder = "build_subfolder"
 
     def requirements(self):
-        self.requires("common/1.0.2@sight/testing")
+        self.requires("common/1.0.2@sight/stable")
 
     def source(self):
         tools.get("https://github.com/MobotixAG/live666/archive/releases/{0}.tar.gz".format(self.upstream_version))
