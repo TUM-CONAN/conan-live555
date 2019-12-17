@@ -19,6 +19,8 @@ class Live555Conan(ConanFile):
 
     def requirements(self):
         self.requires("common/1.0.2@sight/stable")
+        if not tools.os_info.is_linux:
+            self.requires("openssl/1.1.1b-r3@sight/stable")
 
     def source(self):
         live666_hash = "ebb28604c30a68bac49c5643b962b72344ccd409"
@@ -37,7 +39,7 @@ class Live555Conan(ConanFile):
         )
 
         cmake = CMake(self)
-
+        cmake.definitions["WITH_SSL"] = "ON"
         if not tools.os_info.is_windows:
             cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = "ON"
 
