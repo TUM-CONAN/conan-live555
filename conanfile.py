@@ -4,8 +4,8 @@ import os
 
 class Live555Conan(ConanFile):
     name = "live555"
-    package_revision = "-r4"
-    upstream_version = "1.21.0"
+    package_revision = ""
+    upstream_version = "1.22.0"
     version = "{0}{1}".format(upstream_version, package_revision)
     generators = "cmake"
     settings = "os", "arch", "compiler", "build_type"
@@ -13,9 +13,6 @@ class Live555Conan(ConanFile):
     default_options = "shared=True"
     url = "https://git.ircad.fr/conan/conan-live555"
     license = "GNU LGPL"
-    exports = [
-        "patches/CMakeProjectWrapper.txt"
-    ]
     description = "Multimedia streaming library, using open standard protocols (RTP/RTCP, RTSP, SIP)"
     source_subfolder = "source_subfolder"
     build_subfolder = "build_subfolder"
@@ -24,8 +21,9 @@ class Live555Conan(ConanFile):
         self.requires("common/1.0.2@sight/stable")
 
     def source(self):
-        tools.get("https://github.com/MobotixAG/live666/archive/releases/{0}.tar.gz".format(self.upstream_version))
-        os.rename("live666-releases-" + self.upstream_version, self.source_subfolder)
+        live666_hash = "ebb28604c30a68bac49c5643b962b72344ccd409"
+        tools.get("https://github.com/greenjava/live666/archive/{}.tar.gz".format(live666_hash))
+        os.rename("live666-" + live666_hash, self.source_subfolder)
 
     def build(self):
         # Import common flags and defines
