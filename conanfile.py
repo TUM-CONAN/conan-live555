@@ -23,7 +23,7 @@ class Live555Conan(ConanFile):
             self.requires("openssl/1.1.1b-r3@sight/stable")
 
     def source(self):
-        live666_hash = "ebb28604c30a68bac49c5643b962b72344ccd409"
+        live666_hash = "a1cf740358c1d6aed0f2ebe22788de9e172b9eea"
         tools.get("https://github.com/greenjava/live666/archive/{}.tar.gz".format(live666_hash))
         os.rename("live666-" + live666_hash, self.source_subfolder)
 
