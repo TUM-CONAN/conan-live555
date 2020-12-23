@@ -4,14 +4,14 @@ import os
 
 class Live555Conan(ConanFile):
     name = "live555"
-    package_revision = "-r4"
-    upstream_version = "1.21.0"
+    package_revision = ""
+    upstream_version = "1.24.0"
     version = "{0}{1}".format(upstream_version, package_revision)
     generators = "cmake"
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False]}
     default_options = "shared=True"
-    url = "https://git.ircad.fr/conan/conan-live555"
+    url = "https://github.com/TUM-CONAN/conan-live555"
     license = "GNU LGPL"
     exports = [
         "patches/CMakeProjectWrapper.txt"
@@ -21,7 +21,7 @@ class Live555Conan(ConanFile):
     build_subfolder = "build_subfolder"
 
     def requirements(self):
-        self.requires("common/1.0.2@sight/stable")
+        self.requires("ircad_common/1.0.2@camposs/stable")
 
     def source(self):
         tools.get("https://github.com/MobotixAG/live666/archive/releases/{0}.tar.gz".format(self.upstream_version))
