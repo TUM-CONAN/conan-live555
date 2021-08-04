@@ -4,7 +4,7 @@ import os
 
 class Live555Conan(ConanFile):
     name = "live555"
-    package_revision = ""
+    package_revision = "r1"
     upstream_version = "1.24.0"
     version = "{0}{1}".format(upstream_version, package_revision)
     generators = "cmake"
@@ -49,3 +49,4 @@ class Live555Conan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
+        self.cpp_info.includedirs = ['include', 'include/live555/UsageEnvironment', 'include/live555/BasicUsageEnvironment', 'include/live555/groupsock', 'include/live555/liveMedia']
