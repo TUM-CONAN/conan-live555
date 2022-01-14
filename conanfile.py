@@ -4,8 +4,8 @@ import os
 
 class Live555Conan(ConanFile):
     name = "live555"
-    package_revision = "-r1"
-    upstream_version = "1.24.0"
+    package_revision = ""
+    upstream_version = "2022.01.11"
     version = "{0}{1}".format(upstream_version, package_revision)
     generators = "cmake"
     settings = "os", "arch", "compiler", "build_type"
@@ -24,8 +24,8 @@ class Live555Conan(ConanFile):
         self.requires("ircad_common/1.0.2@camposs/stable")
 
     def source(self):
-        tools.get("https://github.com/MobotixAG/live666/archive/releases/{0}.tar.gz".format(self.upstream_version))
-        os.rename("live666-releases-" + self.upstream_version, self.source_subfolder)
+        tools.get("https://github.com/TUM-CAMP-NARVIS/live666/archive/refs/tags/{}.zip".format(self.upstream_version))
+        os.rename("live666-" + self.upstream_version, self.source_subfolder)
 
     def build(self):
         # Import common flags and defines
