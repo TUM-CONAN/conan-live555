@@ -30,6 +30,7 @@ class Live555Conan(ConanFile):
     def build(self):
         # Import common flags and defines
         import common
+        tools.patch(base_path=self.source_subfolder, patch_file='patches/increase_bank_size.patch')
 
         # Generate Cmake wrapper
         common.generate_cmake_wrapper(
