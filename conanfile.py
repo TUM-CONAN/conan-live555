@@ -25,7 +25,7 @@ class Live555Conan(ConanFile):
         tools.get("https://github.com/TUM-CAMP-NARVIS/live666/archive/refs/tags/{}.zip".format(self.upstream_version))
         os.rename("live666-" + self.upstream_version, self.source_subfolder)
 
-    def build(self):
+    def _cmake_configure(self):
         # Import common flags and defines
         import common
         tools.patch(base_path=self.source_subfolder, patch_file='patches/increase_bank_size.patch')
@@ -43,7 +43,15 @@ class Live555Conan(ConanFile):
             cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = "ON"
 
         cmake.configure()
+        return cmake
+
+
+    def build(self):
+        cmake = self._cmake_configure()
         cmake.build()
+
+    def package(self):
+        cmake = self._cmake_configure()
         cmake.install()
 
     def package_info(self):
