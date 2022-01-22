@@ -13,9 +13,7 @@ class Live555Conan(ConanFile):
     default_options = "shared=True"
     url = "https://github.com/TUM-CONAN/conan-live555"
     license = "GNU LGPL"
-    exports = [
-        "patches/CMakeProjectWrapper.txt"
-    ]
+    exports = ["patches/*",]
     description = "Multimedia streaming library, using open standard protocols (RTP/RTCP, RTSP, SIP)"
     source_subfolder = "source_subfolder"
     build_subfolder = "build_subfolder"
