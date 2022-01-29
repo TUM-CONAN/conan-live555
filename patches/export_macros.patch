@@ -1,0 +1,3208 @@
+diff --git a/BasicUsageEnvironment/include/BasicHashTable.hh b/BasicUsageEnvironment/include/BasicHashTable.hh
+index 5b4d3eb..9466b7f 100644
+--- a/BasicUsageEnvironment/include/BasicHashTable.hh
++++ b/BasicUsageEnvironment/include/BasicHashTable.hh
+@@ -32,7 +32,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 
+ #define SMALL_HASH_TABLE_SIZE 4
+ 
+-class BasicHashTable: public HashTable {
++class LIVEMEDIA_API BasicHashTable: public HashTable {
+ private:
+ 	class TableEntry; // forward
+ 
+diff --git a/BasicUsageEnvironment/include/BasicUsageEnvironment.hh b/BasicUsageEnvironment/include/BasicUsageEnvironment.hh
+index 7d5133f..23107e4 100644
+--- a/BasicUsageEnvironment/include/BasicUsageEnvironment.hh
++++ b/BasicUsageEnvironment/include/BasicUsageEnvironment.hh
+@@ -24,7 +24,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "BasicUsageEnvironment0.hh"
+ #endif
+ 
+-class BasicUsageEnvironment: public BasicUsageEnvironment0 {
++class LIVEMEDIA_API BasicUsageEnvironment: public BasicUsageEnvironment0 {
+ public:
+   static BasicUsageEnvironment* createNew(TaskScheduler& taskScheduler);
+ 
+@@ -44,7 +44,7 @@ protected:
+ };
+ 
+ 
+-class BasicTaskScheduler: public BasicTaskScheduler0 {
++class LIVEMEDIA_API BasicTaskScheduler: public BasicTaskScheduler0 {
+ public:
+   static BasicTaskScheduler* createNew(unsigned maxSchedulerGranularity = 10000/*microseconds*/);
+     // "maxSchedulerGranularity" (default value: 10 ms) specifies the maximum time that we wait (in "select()") before
+diff --git a/BasicUsageEnvironment/include/BasicUsageEnvironment0.hh b/BasicUsageEnvironment/include/BasicUsageEnvironment0.hh
+index d91b441..7c69865 100644
+--- a/BasicUsageEnvironment/include/BasicUsageEnvironment0.hh
++++ b/BasicUsageEnvironment/include/BasicUsageEnvironment0.hh
+@@ -36,7 +36,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 
+ // An abstract base class, useful for subclassing
+ // (e.g., to redefine the implementation of "operator<<")
+-class BasicUsageEnvironment0: public UsageEnvironment {
++class LIVEMEDIA_API BasicUsageEnvironment0: public UsageEnvironment {
+ public:
+   // redefined virtual functions:
+   virtual MsgString getResultMsg() const;
+@@ -65,13 +65,13 @@ private:
+   unsigned fBufferMaxSize;
+ };
+ 
+-class HandlerSet; // forward
++class LIVEMEDIA_API HandlerSet; // forward
+ 
+ #define MAX_NUM_EVENT_TRIGGERS 32
+ 
+ // An abstract base class, useful for subclassing
+ // (e.g., to redefine the implementation of socket event handling)
+-class BasicTaskScheduler0: public TaskScheduler {
++class LIVEMEDIA_API BasicTaskScheduler0: public TaskScheduler {
+ public:
+   virtual ~BasicTaskScheduler0();
+ 
+diff --git a/BasicUsageEnvironment/include/DelayQueue.hh b/BasicUsageEnvironment/include/DelayQueue.hh
+index 27cdab1..c310584 100644
+--- a/BasicUsageEnvironment/include/DelayQueue.hh
++++ b/BasicUsageEnvironment/include/DelayQueue.hh
+@@ -24,6 +24,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "NetCommon.h"
+ #endif
+ 
++#include "export.h"
++
+ #ifdef TIME_BASE
+ typedef TIME_BASE time_base_seconds;
+ #else
+@@ -32,7 +34,7 @@ typedef long time_base_seconds;
+ 
+ ///// A "Timeval" can be either an absolute time, or a time interval /////
+ 
+-class Timeval {
++class LIVEMEDIA_API Timeval {
+ public:
+   time_base_seconds seconds() const {
+     return fTv.tv_sec;
+@@ -95,13 +97,13 @@ inline Timeval min(Timeval const& arg1, Timeval const& arg2) {
+ }
+ #endif
+ 
+-class DelayInterval operator-(Timeval const& arg1, Timeval const& arg2);
++class LIVEMEDIA_API DelayInterval operator-(Timeval const& arg1, Timeval const& arg2);
+ // returns ZERO iff arg2 >= arg1
+ 
+ 
+ ///// DelayInterval /////
+ 
+-class DelayInterval: public Timeval {
++class LIVEMEDIA_API DelayInterval: public Timeval {
+ public:
+   DelayInterval(time_base_seconds seconds, time_base_seconds useconds)
+     : Timeval(seconds, useconds) {}
+@@ -117,7 +119,7 @@ extern DelayInterval const DELAY_DAY;
+ 
+ ///// _EventTime /////
+ 
+-class _EventTime: public Timeval {
++class LIVEMEDIA_API _EventTime: public Timeval {
+ public:
+   _EventTime(unsigned secondsSinceEpoch = 0,
+ 	    unsigned usecondsSinceEpoch = 0)
+@@ -132,7 +134,7 @@ extern _EventTime const THE_END_OF_TIME;
+ 
+ ///// DelayQueueEntry /////
+ 
+-class DelayQueueEntry {
++class LIVEMEDIA_API DelayQueueEntry {
+ public:
+   virtual ~DelayQueueEntry();
+ 
+@@ -157,7 +159,7 @@ private:
+ 
+ ///// DelayQueue /////
+ 
+-class DelayQueue: public DelayQueueEntry {
++class LIVEMEDIA_API DelayQueue: public DelayQueueEntry {
+ public:
+   DelayQueue();
+   virtual ~DelayQueue();
+diff --git a/BasicUsageEnvironment/include/HandlerSet.hh b/BasicUsageEnvironment/include/HandlerSet.hh
+index 6af6e72..cb8783a 100644
+--- a/BasicUsageEnvironment/include/HandlerSet.hh
++++ b/BasicUsageEnvironment/include/HandlerSet.hh
+@@ -24,9 +24,11 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "Boolean.hh"
+ #endif
+ 
++#include "export.h"
++
+ ////////// HandlerSet (etc.) definition //////////
+ 
+-class HandlerDescriptor {
++class LIVEMEDIA_API HandlerDescriptor {
+   HandlerDescriptor(HandlerDescriptor* nextHandler);
+   virtual ~HandlerDescriptor();
+ 
+@@ -44,7 +46,7 @@ private:
+   HandlerDescriptor* fPrevHandler;
+ };
+ 
+-class HandlerSet {
++class LIVEMEDIA_API HandlerSet {
+ public:
+   HandlerSet();
+   virtual ~HandlerSet();
+@@ -61,7 +63,7 @@ private:
+   HandlerDescriptor fHandlers;
+ };
+ 
+-class HandlerIterator {
++class LIVEMEDIA_API HandlerIterator {
+ public:
+   HandlerIterator(HandlerSet& handlerSet);
+   virtual ~HandlerIterator();
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4b23e08..f43a52b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -121,6 +121,7 @@ list ( APPEND ${PROJECT_NAME}_HEADERS_LIVEMEDIA
+    ${${PROJECT_NAME}_HOME}/liveMedia/include/DVVideoRTPSource.hh
+    ${${PROJECT_NAME}_HOME}/liveMedia/include/DVVideoStreamFramer.hh
+    ${${PROJECT_NAME}_HOME}/liveMedia/include/FileServerMediaSubsession.hh
++   ${${PROJECT_NAME}_HOME}/liveMedia/include/export.h
+    ${${PROJECT_NAME}_HOME}/liveMedia/include/FileSink.hh
+    ${${PROJECT_NAME}_HOME}/liveMedia/include/FramedFileSource.hh
+    ${${PROJECT_NAME}_HOME}/liveMedia/include/FramedFilter.hh
+@@ -536,7 +537,7 @@ if ( WIN32 AND NOT CMAKE_COMPILER_IS_GNUCXX )
+       "/wd4267" # 'var' : conversion from 'size_t' to 'type', possible loss of data
+       "/wd4312" # 'operation' : conversion from 'type1' to 'type2' of greater size
+       "/wd4334" # 'operator' : result of 32-bit shift implicitly converted to 64 bits (was 64-bit shift intended?)
+-      "/wd4477" # <function> : format string <format-string> requires an argument of type <type>, but variadic argument <position> has type <type> 
++      "/wd4477" # <function> : format string <format-string> requires an argument of type <type>, but variadic argument <position> has type <type>
+       "/wd4800" # 'type': forcing value to bool 'true' or 'false' (performance warning)
+       "/wd4996" # 'function': was declared deprecated also 'std::<function name>': Function call with parameters that may be unsafe - this call relies on the caller to check that the passed values are correct.To disable this warning, use -D_SCL_SECURE_NO_WARNINGS.See documentation on how to use Visual C++ 'Checked Iterators'
+    )
+diff --git a/UsageEnvironment/include/HashTable.hh b/UsageEnvironment/include/HashTable.hh
+index 2a82431..3c391cc 100644
+--- a/UsageEnvironment/include/HashTable.hh
++++ b/UsageEnvironment/include/HashTable.hh
+@@ -24,14 +24,16 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "Boolean.hh"
+ #endif
+ 
+-class HashTable {
++#include "export.h"
++
++class LIVEMEDIA_API HashTable {
+ public:
+   virtual ~HashTable();
+-  
++
+   // The following must be implemented by a particular
+   // implementation (subclass):
+   static HashTable* create(int keyType);
+-  
++
+   virtual void* Add(char const* key, void* value) = 0;
+   // Returns the old value if different, otherwise 0
+   virtual Boolean Remove(char const* key) = 0;
+@@ -39,31 +41,31 @@ public:
+   // Returns 0 if not found
+   virtual unsigned numEntries() const = 0;
+   Boolean IsEmpty() const { return numEntries() == 0; }
+-  
++
+   // Used to iterate through the members of the table:
+   class Iterator {
+   public:
+     // The following must be implemented by a particular
+     // implementation (subclass):
+     static Iterator* create(HashTable const& hashTable);
+-    
++
+     virtual ~Iterator();
+-    
++
+     virtual void* next(char const*& key) = 0; // returns 0 if none
+-    
++
+   protected:
+     Iterator(); // abstract base class
+   };
+-  
++
+   // A shortcut that can be used to successively remove each of
+   // the entries in the table (e.g., so that their values can be
+   // deleted, if they happen to be pointers to allocated memory).
+   void* RemoveNext();
+-  
++
+   // Returns the first entry in the table.
+   // (This is useful for deleting each entry in the table, if the entry's destructor also removes itself from the table.)
+-  void* getFirst(); 
+-  
++  void* getFirst();
++
+ protected:
+   HashTable(); // abstract base class
+ };
+diff --git a/UsageEnvironment/include/UsageEnvironment.hh b/UsageEnvironment/include/UsageEnvironment.hh
+index 2527c2c..dca4b1b 100644
+--- a/UsageEnvironment/include/UsageEnvironment.hh
++++ b/UsageEnvironment/include/UsageEnvironment.hh
+@@ -37,6 +37,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "strDup.hh"
+ #endif
+ 
++#include "export.h"
++
+ #ifndef NULL
+ #define NULL 0
+ #endif
+@@ -46,11 +48,11 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #define _O_BINARY O_BINARY
+ #endif
+ 
+-class TaskScheduler; // forward
++class LIVEMEDIA_API TaskScheduler; // forward
+ 
+ // An abstract base class, subclassed for each use of the library
+ 
+-class UsageEnvironment {
++class LIVEMEDIA_API UsageEnvironment {
+ public:
+   Boolean reclaim();
+       // returns True iff we were actually able to delete our object
+diff --git a/UsageEnvironment/include/strDup.hh b/UsageEnvironment/include/strDup.hh
+index d59723d..45fabb6 100644
+--- a/UsageEnvironment/include/strDup.hh
++++ b/UsageEnvironment/include/strDup.hh
+@@ -24,14 +24,16 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 
+ #include <string.h>
+ 
+-char* strDup(char const* str);
++#include "export.h"
++
++LIVEMEDIA_API char* strDup(char const* str);
+ // Note: strDup(NULL) returns NULL
+ 
+-char* strDupSize(char const* str);
++LIVEMEDIA_API char* strDupSize(char const* str);
+ // Like "strDup()", except that it *doesn't* copy the original.
+ // (Instead, it just allocates a string of the same size as the original.)
+ 
+-char* strDupSize(char const* str, size_t& resultBufSize);
++LIVEMEDIA_API char* strDupSize(char const* str, size_t& resultBufSize);
+ // An alternative form of "strDupSize()" that also returns the size of the allocated buffer.
+ 
+ #endif
+diff --git a/groupsock/include/GroupEId.hh b/groupsock/include/GroupEId.hh
+index f65eae6..81b4fb0 100644
+--- a/groupsock/include/GroupEId.hh
++++ b/groupsock/include/GroupEId.hh
+@@ -29,7 +29,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "NetAddress.hh"
+ #endif
+ 
+-class GroupEId {
++class LIVEMEDIA_API GroupEId {
+ public:
+   GroupEId(struct sockaddr_storage const& groupAddr,
+ 	   portNumBits portNum, u_int8_t ttl);
+diff --git a/groupsock/include/Groupsock.hh b/groupsock/include/Groupsock.hh
+index af1d120..0e36c6d 100644
+--- a/groupsock/include/Groupsock.hh
++++ b/groupsock/include/Groupsock.hh
+@@ -36,7 +36,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ // An "OutputSocket" is (by default) used only to send packets.
+ // No packets are received on it (unless a subclass arranges this)
+ 
+-class OutputSocket: public Socket {
++class LIVEMEDIA_API OutputSocket: public Socket {
+ public:
+   OutputSocket(UsageEnvironment& env, int family);
+   virtual ~OutputSocket();
+@@ -75,7 +75,7 @@ public:
+ // As the name suggests, it was originally designed to send/receive
+ // multicast, but it can send/receive unicast as well.
+ 
+-class Groupsock: public OutputSocket {
++class LIVEMEDIA_API Groupsock: public OutputSocket {
+ public:
+   Groupsock(UsageEnvironment& env, struct sockaddr_storage const& groupAddr,
+ 	    Port port, u_int8_t ttl);
+@@ -157,7 +157,7 @@ UsageEnvironment& operator<<(UsageEnvironment& s, const Groupsock& g);
+ 
+ // A data structure for looking up a 'groupsock'
+ // by (multicast address, port), or by socket number
+-class GroupsockLookupTable {
++class LIVEMEDIA_API GroupsockLookupTable {
+ public:
+   Groupsock* Fetch(UsageEnvironment& env, struct sockaddr_storage const& groupAddress,
+ 		   Port port, u_int8_t ttl, Boolean& isNew);
+diff --git a/groupsock/include/GroupsockHelper.hh b/groupsock/include/GroupsockHelper.hh
+index 960b56d..7e99e22 100644
+--- a/groupsock/include/GroupsockHelper.hh
++++ b/groupsock/include/GroupsockHelper.hh
+@@ -7,7 +7,7 @@ option) any later version. (See <http://www.gnu.org/copyleft/lesser.html>.)
+ This library is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+-more details.
++
+ 
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, write to the Free Software Foundation, Inc.,
+@@ -25,75 +25,77 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "NetAddress.hh"
+ #endif
+ 
+-int setupDatagramSocket(UsageEnvironment& env, Port port, int domain);
+-int setupStreamSocket(UsageEnvironment& env, Port port, int domain,
++#include "export.h"
++
++LIVEMEDIA_API int setupDatagramSocket(UsageEnvironment& env, Port port, int domain);
++LIVEMEDIA_API int setupStreamSocket(UsageEnvironment& env, Port port, int domain,
+ 		      Boolean makeNonBlocking = True, Boolean setKeepAlive = False);
+ 
+-int readSocket(UsageEnvironment& env,
++LIVEMEDIA_API int readSocket(UsageEnvironment& env,
+ 	       int socket, unsigned char* buffer, unsigned bufferSize,
+ 	       struct sockaddr_storage& fromAddress /*set only if we're a datagram socket*/);
+ 
+-Boolean writeSocket(UsageEnvironment& env,
++LIVEMEDIA_API Boolean writeSocket(UsageEnvironment& env,
+ 		    int socket, struct sockaddr_storage const& addressAndPort,
+ 		    u_int8_t ttlArg,
+ 		    unsigned char* buffer, unsigned bufferSize);
+ 
+-Boolean writeSocket(UsageEnvironment& env,
++LIVEMEDIA_API Boolean writeSocket(UsageEnvironment& env,
+ 		    int socket, struct sockaddr_storage const& addressAndPort,
+ 		    unsigned char* buffer, unsigned bufferSize);
+     // An optimized version of "writeSocket" that omits the "setsockopt()" call to set the TTL.
+ 
+-void ignoreSigPipeOnSocket(int socketNum);
++LIVEMEDIA_API void ignoreSigPipeOnSocket(int socketNum);
+ 
+-unsigned getSendBufferSize(UsageEnvironment& env, int socket);
+-unsigned getReceiveBufferSize(UsageEnvironment& env, int socket);
+-unsigned setSendBufferTo(UsageEnvironment& env,
++LIVEMEDIA_API unsigned getSendBufferSize(UsageEnvironment& env, int socket);
++LIVEMEDIA_API unsigned getReceiveBufferSize(UsageEnvironment& env, int socket);
++LIVEMEDIA_API unsigned setSendBufferTo(UsageEnvironment& env,
+ 			 int socket, unsigned requestedSize);
+-unsigned setReceiveBufferTo(UsageEnvironment& env,
++LIVEMEDIA_API unsigned setReceiveBufferTo(UsageEnvironment& env,
+ 			    int socket, unsigned requestedSize);
+-unsigned increaseSendBufferTo(UsageEnvironment& env,
++LIVEMEDIA_API unsigned increaseSendBufferTo(UsageEnvironment& env,
+ 			      int socket, unsigned requestedSize);
+-unsigned increaseReceiveBufferTo(UsageEnvironment& env,
++LIVEMEDIA_API unsigned increaseReceiveBufferTo(UsageEnvironment& env,
+ 				 int socket, unsigned requestedSize);
+ 
+-Boolean makeSocketNonBlocking(int sock);
+-Boolean makeSocketBlocking(int sock, unsigned writeTimeoutInMilliseconds = 0);
++LIVEMEDIA_API Boolean makeSocketNonBlocking(int sock);
++LIVEMEDIA_API Boolean makeSocketBlocking(int sock, unsigned writeTimeoutInMilliseconds = 0);
+   // A "writeTimeoutInMilliseconds" value of 0 means: Don't timeout
+-Boolean setSocketKeepAlive(int sock);
++LIVEMEDIA_API Boolean setSocketKeepAlive(int sock);
+ 
+-Boolean socketJoinGroup(UsageEnvironment& env, int socket,
++LIVEMEDIA_API Boolean socketJoinGroup(UsageEnvironment& env, int socket,
+ 			struct sockaddr_storage const& groupAddress);
+-Boolean socketLeaveGroup(UsageEnvironment&, int socket,
++LIVEMEDIA_API Boolean socketLeaveGroup(UsageEnvironment&, int socket,
+ 			 struct sockaddr_storage const& groupAddress);
+ 
+ // source-specific multicast join/leave
+-Boolean socketJoinGroupSSM(UsageEnvironment& env, int socket,
++LIVEMEDIA_API Boolean socketJoinGroupSSM(UsageEnvironment& env, int socket,
+ 			   struct sockaddr_storage const& groupAddress,
+ 			   struct sockaddr_storage const& sourceFilterAddr);
+-Boolean socketLeaveGroupSSM(UsageEnvironment&, int socket,
++LIVEMEDIA_API Boolean socketLeaveGroupSSM(UsageEnvironment&, int socket,
+ 			    struct sockaddr_storage const& groupAddress,
+ 			    struct sockaddr_storage const& sourceFilterAddr);
+ 
+-Boolean getSourcePort(UsageEnvironment& env, int socket, int domain, Port& port);
++LIVEMEDIA_API Boolean getSourcePort(UsageEnvironment& env, int socket, int domain, Port& port);
+ 
+ ipv4AddressBits ourIPv4Address(UsageEnvironment& env); // in network order
+ ipv6AddressBits const& ourIPv6Address(UsageEnvironment& env);
+ 
+-Boolean weHaveAnIPv4Address(UsageEnvironment& env);
+-Boolean weHaveAnIPv6Address(UsageEnvironment& env);
+-Boolean weHaveAnIPAddress(UsageEnvironment& env);
++LIVEMEDIA_API Boolean weHaveAnIPv4Address(UsageEnvironment& env);
++LIVEMEDIA_API Boolean weHaveAnIPv6Address(UsageEnvironment& env);
++LIVEMEDIA_API Boolean weHaveAnIPAddress(UsageEnvironment& env);
+   // returns True if we have either an IPv4 or an IPv6 address
+ 
+ // IPv4 addresses of our sending and receiving interfaces.  (By default, these
+ // are INADDR_ANY (i.e., 0), specifying the default interface.)
+-extern ipv4AddressBits SendingInterfaceAddr;
+-extern ipv4AddressBits ReceivingInterfaceAddr;
++extern LIVEMEDIA_API ipv4AddressBits SendingInterfaceAddr;
++extern LIVEMEDIA_API ipv4AddressBits ReceivingInterfaceAddr;
+ 
+ // Allocates a randomly-chosen IPv4 SSM (multicast) address:
+-ipv4AddressBits chooseRandomIPv4SSMAddress(UsageEnvironment& env);
++LIVEMEDIA_API ipv4AddressBits chooseRandomIPv4SSMAddress(UsageEnvironment& env);
+ 
+ // Returns a simple "hh:mm:ss" string, for use in debugging output (e.g.)
+-char const* timestampString();
++LIVEMEDIA_API char const* timestampString();
+ 
+ 
+ #ifdef HAVE_SOCKADDR_LEN
+@@ -125,7 +127,7 @@ char const* timestampString();
+ //            NoReuse dummy;
+ //            ...
+ //          }
+-class NoReuse {
++class LIVEMEDIA_API NoReuse {
+ public:
+   NoReuse(UsageEnvironment& env);
+   ~NoReuse();
+@@ -137,24 +139,24 @@ private:
+ 
+ // Define the "UsageEnvironment"-specific "groupsockPriv" structure:
+ 
+-struct _groupsockPriv { // There should be only one of these allocated
++struct LIVEMEDIA_API _groupsockPriv { // There should be only one of these allocated
+   HashTable* socketTable;
+   int reuseFlag;
+ };
+-_groupsockPriv* groupsockPriv(UsageEnvironment& env); // allocates it if necessary
+-void reclaimGroupsockPriv(UsageEnvironment& env);
++LIVEMEDIA_API _groupsockPriv* groupsockPriv(UsageEnvironment& env); // allocates it if necessary
++LIVEMEDIA_API void  reclaimGroupsockPriv(UsageEnvironment& env);
+ 
+ 
+ #if (defined(__WIN32__) || defined(_WIN32)) && !defined(__MINGW32__)
+ // For Windoze, we need to implement our own gettimeofday()
+-extern int gettimeofday(struct timeval*, int*);
++extern LIVEMEDIA_API int gettimeofday(struct timeval*, int*);
+ #else
+ #include <sys/time.h>
+ #endif
+ 
+ // The following are implemented in inet.c:
+-extern "C" void our_srandom(int x);
+-extern "C" long our_random();
+-extern "C" u_int32_t our_random32(); // because "our_random()" returns a 31-bit number
++extern "C" LIVEMEDIA_API void  our_srandom(int x);
++extern "C" LIVEMEDIA_API long our_random();
++extern "C" LIVEMEDIA_API u_int32_t our_random32(); // because "our_random()" returns a 31-bit number
+ 
+ #endif
+diff --git a/groupsock/include/IOHandlers.hh b/groupsock/include/IOHandlers.hh
+index b4be08d..279961c 100644
+--- a/groupsock/include/IOHandlers.hh
++++ b/groupsock/include/IOHandlers.hh
+@@ -26,6 +26,6 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #endif
+ 
+ // Handles incoming data on sockets:
+-void socketReadHandler(Socket* sock, int mask);
++LIVEMEDIA_API void socketReadHandler(Socket* sock, int mask);
+ 
+ #endif
+diff --git a/groupsock/include/NetAddress.hh b/groupsock/include/NetAddress.hh
+index 22d726c..d580f05 100644
+--- a/groupsock/include/NetAddress.hh
++++ b/groupsock/include/NetAddress.hh
+@@ -38,7 +38,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ typedef u_int32_t ipv4AddressBits;
+ typedef u_int8_t ipv6AddressBits[16]; // 128 bits
+ 
+-class NetAddress {
++class LIVEMEDIA_API NetAddress {
+ public:
+   NetAddress(u_int8_t const* data,
+ 	     unsigned length = 4 /* default: 32 bits (for IPv4); use 16 (128 bits) for IPv6 */);
+@@ -69,7 +69,7 @@ void copyAddress(struct sockaddr_storage& to, NetAddress const* from);
+ Boolean operator==(struct sockaddr_storage const& left, struct sockaddr_storage const& right);
+     // compares the family and address parts only; not the port number or anything else
+ 
+-class NetAddressList {
++class LIVEMEDIA_API NetAddressList {
+ public:
+   NetAddressList(char const* hostname, int addressFamily = AF_UNSPEC);
+   NetAddressList(NetAddressList const& orig);
+@@ -101,7 +101,7 @@ private:
+ 
+ typedef u_int16_t portNumBits;
+ 
+-class Port {
++class LIVEMEDIA_API Port {
+ public:
+   Port(portNumBits num /* in host byte order */);
+   
+@@ -118,7 +118,7 @@ UsageEnvironment& operator<<(UsageEnvironment& s, const Port& p);
+ 
+ 
+ // A generic table for looking up objects by (address1, address2, port)
+-class AddressPortLookupTable {
++class LIVEMEDIA_API AddressPortLookupTable {
+ public:
+   AddressPortLookupTable();
+   virtual ~AddressPortLookupTable();
+@@ -176,7 +176,7 @@ Boolean IsMulticastAddress(struct sockaddr_storage const& address);
+ 
+ // A mechanism for displaying an IP (v4 or v6) address in ASCII.
+ // (This encapsulates the "inet_ntop()" function.)
+-class AddressString {
++class LIVEMEDIA_API AddressString {
+ public:
+   // IPv4 input:
+   AddressString(struct sockaddr_in const& addr);
+diff --git a/groupsock/include/NetInterface.hh b/groupsock/include/NetInterface.hh
+index ea61828..d02a303 100644
+--- a/groupsock/include/NetInterface.hh
++++ b/groupsock/include/NetInterface.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "NetAddress.hh"
+ #endif
+ 
+-class NetInterface {
++class LIVEMEDIA_API NetInterface {
+ public:
+   virtual ~NetInterface();
+ 
+@@ -36,7 +36,7 @@ protected:
+   NetInterface(); // virtual base class
+ };
+ 
+-class Socket: public NetInterface {
++class LIVEMEDIA_API Socket: public NetInterface {
+ public:
+   virtual ~Socket();
+   void reset(); // closes the socket, and sets "fSocketNum" to -1
+@@ -72,7 +72,7 @@ UsageEnvironment& operator<<(UsageEnvironment& s, const Socket& sock);
+ 
+ // A data structure for looking up a Socket by port:
+ 
+-class SocketLookupTable {
++class LIVEMEDIA_API SocketLookupTable {
+ public:
+   virtual ~SocketLookupTable();
+ 
+@@ -90,7 +90,7 @@ private:
+ 
+ // A data structure for counting traffic:
+ 
+-class NetInterfaceTrafficStats {
++class LIVEMEDIA_API NetInterfaceTrafficStats {
+ public:
+   NetInterfaceTrafficStats();
+ 
+diff --git a/liveMedia/Makefile.tail b/liveMedia/Makefile.tail
+index 567aefb..372138f 100644
+--- a/liveMedia/Makefile.tail
++++ b/liveMedia/Makefile.tail
+@@ -71,7 +71,7 @@ $(LIVEMEDIA_LIB): $(LIVEMEDIA_LIB_OBJS) \
+ 		$(LIVEMEDIA_LIB_OBJS) $(LIBS_FOR_LIVEMEDIA_LIB)
+ 
+ Media.$(CPP):		include/Media.hh
+-include/Media.hh:	include/liveMedia_version.hh
++include/Media.hh:	include/liveMedia_version.hh include/export.h
+ MediaSource.$(CPP):	include/MediaSource.hh
+ include/MediaSource.hh:		include/Media.hh
+ FramedSource.$(CPP):	include/FramedSource.hh
+@@ -414,7 +414,7 @@ HMAC_SHA1.$(CPP):	include/HMAC_SHA1.hh
+ include/SRTPCryptographicContext.hh:	include/MIKEY.hh
+ SRTPCryptographicContext.$(CPP):	include/SRTPCryptographicContext.hh include/HMAC_SHA1.hh
+ include/HMAC_SHA1.hh:	include/HMAC_hash.hh
+-BitVector.$(CPP):	include/BitVector.hh
++BitVector.$(CPP):	include/BitVector.hh include/export.h
+ StreamParser.$(CPP):	StreamParser.hh
+ DigestAuthentication.$(CPP):	include/DigestAuthentication.hh include/ourMD5.hh
+ ourMD5.$(CPP):	include/ourMD5.hh
+diff --git a/liveMedia/include/AC3AudioFileServerMediaSubsession.hh b/liveMedia/include/AC3AudioFileServerMediaSubsession.hh
+index d716e8b..ba97ad0 100644
+--- a/liveMedia/include/AC3AudioFileServerMediaSubsession.hh
++++ b/liveMedia/include/AC3AudioFileServerMediaSubsession.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileServerMediaSubsession.hh"
+ #endif
+ 
+-class AC3AudioFileServerMediaSubsession: public FileServerMediaSubsession{
++class LIVEMEDIA_API AC3AudioFileServerMediaSubsession: public FileServerMediaSubsession{
+ public:
+   static AC3AudioFileServerMediaSubsession*
+   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
+diff --git a/liveMedia/include/AC3AudioRTPSink.hh b/liveMedia/include/AC3AudioRTPSink.hh
+index ee367dc..fd5b2cf 100644
+--- a/liveMedia/include/AC3AudioRTPSink.hh
++++ b/liveMedia/include/AC3AudioRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "AudioRTPSink.hh"
+ #endif
+ 
+-class AC3AudioRTPSink: public AudioRTPSink {
++class LIVEMEDIA_API AC3AudioRTPSink: public AudioRTPSink {
+ public:
+   static AC3AudioRTPSink* createNew(UsageEnvironment& env,
+ 				    Groupsock* RTPgs,
+diff --git a/liveMedia/include/AC3AudioRTPSource.hh b/liveMedia/include/AC3AudioRTPSource.hh
+index 1f5c987..11d89c4 100644
+--- a/liveMedia/include/AC3AudioRTPSource.hh
++++ b/liveMedia/include/AC3AudioRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class AC3AudioRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API AC3AudioRTPSource: public MultiFramedRTPSource {
+ public:
+   static AC3AudioRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/AC3AudioStreamFramer.hh b/liveMedia/include/AC3AudioStreamFramer.hh
+index 06cb89f..b603b8d 100644
+--- a/liveMedia/include/AC3AudioStreamFramer.hh
++++ b/liveMedia/include/AC3AudioStreamFramer.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedFilter.hh"
+ #endif
+ 
+-class AC3AudioStreamFramer: public FramedFilter {
++class LIVEMEDIA_API AC3AudioStreamFramer: public FramedFilter {
+ public:
+   static AC3AudioStreamFramer*
+   createNew(UsageEnvironment& env, FramedSource* inputSource,
+diff --git a/liveMedia/include/ADTSAudioFileServerMediaSubsession.hh b/liveMedia/include/ADTSAudioFileServerMediaSubsession.hh
+index 921ab0e..daba519 100644
+--- a/liveMedia/include/ADTSAudioFileServerMediaSubsession.hh
++++ b/liveMedia/include/ADTSAudioFileServerMediaSubsession.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileServerMediaSubsession.hh"
+ #endif
+ 
+-class ADTSAudioFileServerMediaSubsession: public FileServerMediaSubsession{
++class LIVEMEDIA_API ADTSAudioFileServerMediaSubsession: public FileServerMediaSubsession{
+ public:
+   static ADTSAudioFileServerMediaSubsession*
+   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
+diff --git a/liveMedia/include/ADTSAudioFileSource.hh b/liveMedia/include/ADTSAudioFileSource.hh
+index 89627f5..0def838 100644
+--- a/liveMedia/include/ADTSAudioFileSource.hh
++++ b/liveMedia/include/ADTSAudioFileSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedFileSource.hh"
+ #endif
+ 
+-class ADTSAudioFileSource: public FramedFileSource {
++class LIVEMEDIA_API ADTSAudioFileSource: public FramedFileSource {
+ public:
+   static ADTSAudioFileSource* createNew(UsageEnvironment& env,
+ 				       char const* fileName);
+diff --git a/liveMedia/include/ADTSAudioStreamDiscreteFramer.hh b/liveMedia/include/ADTSAudioStreamDiscreteFramer.hh
+index 2dbc96f..096d23a 100644
+--- a/liveMedia/include/ADTSAudioStreamDiscreteFramer.hh
++++ b/liveMedia/include/ADTSAudioStreamDiscreteFramer.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 
+ #define ADTS_HEADER_SIZE 7 // we don't include a checksum
+ 
+-class ADTSAudioStreamDiscreteFramer: public FramedFilter {
++class LIVEMEDIA_API ADTSAudioStreamDiscreteFramer: public FramedFilter {
+ public:
+   static ADTSAudioStreamDiscreteFramer*
+   createNew(UsageEnvironment& env, FramedSource* inputSource, char const* configStr);
+diff --git a/liveMedia/include/AMRAudioFileServerMediaSubsession.hh b/liveMedia/include/AMRAudioFileServerMediaSubsession.hh
+index a49b204..613edd8 100644
+--- a/liveMedia/include/AMRAudioFileServerMediaSubsession.hh
++++ b/liveMedia/include/AMRAudioFileServerMediaSubsession.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileServerMediaSubsession.hh"
+ #endif
+ 
+-class AMRAudioFileServerMediaSubsession: public FileServerMediaSubsession{
++class LIVEMEDIA_API AMRAudioFileServerMediaSubsession: public FileServerMediaSubsession{
+ public:
+   static AMRAudioFileServerMediaSubsession*
+   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
+diff --git a/liveMedia/include/AMRAudioFileSink.hh b/liveMedia/include/AMRAudioFileSink.hh
+index 116c435..9e5fc6b 100644
+--- a/liveMedia/include/AMRAudioFileSink.hh
++++ b/liveMedia/include/AMRAudioFileSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileSink.hh"
+ #endif
+ 
+-class AMRAudioFileSink: public FileSink {
++class LIVEMEDIA_API AMRAudioFileSink: public FileSink {
+ public:
+   static AMRAudioFileSink* createNew(UsageEnvironment& env, char const* fileName,
+ 				     unsigned bufferSize = 10000,
+diff --git a/liveMedia/include/AMRAudioFileSource.hh b/liveMedia/include/AMRAudioFileSource.hh
+index 4a5219e..cc4821d 100644
+--- a/liveMedia/include/AMRAudioFileSource.hh
++++ b/liveMedia/include/AMRAudioFileSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "AMRAudioSource.hh"
+ #endif
+ 
+-class AMRAudioFileSource: public AMRAudioSource {
++class LIVEMEDIA_API AMRAudioFileSource: public AMRAudioSource {
+ public:
+   static AMRAudioFileSource* createNew(UsageEnvironment& env,
+ 				       char const* fileName);
+diff --git a/liveMedia/include/AMRAudioRTPSink.hh b/liveMedia/include/AMRAudioRTPSink.hh
+index 418ab82..8e2454b 100644
+--- a/liveMedia/include/AMRAudioRTPSink.hh
++++ b/liveMedia/include/AMRAudioRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "AudioRTPSink.hh"
+ #endif
+ 
+-class AMRAudioRTPSink: public AudioRTPSink {
++class LIVEMEDIA_API AMRAudioRTPSink: public AudioRTPSink {
+ public:
+   static AMRAudioRTPSink* createNew(UsageEnvironment& env,
+ 				    Groupsock* RTPgs,
+diff --git a/liveMedia/include/AMRAudioRTPSource.hh b/liveMedia/include/AMRAudioRTPSource.hh
+index 99d13b1..2f45926 100644
+--- a/liveMedia/include/AMRAudioRTPSource.hh
++++ b/liveMedia/include/AMRAudioRTPSource.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "AMRAudioSource.hh"
+ #endif
+ 
+-class AMRAudioRTPSource {
++class LIVEMEDIA_API AMRAudioRTPSource {
+ public:
+   static AMRAudioSource* createNew(UsageEnvironment& env,
+ 				   Groupsock* RTPgs,
+diff --git a/liveMedia/include/AMRAudioSource.hh b/liveMedia/include/AMRAudioSource.hh
+index 5422590..92a2cef 100644
+--- a/liveMedia/include/AMRAudioSource.hh
++++ b/liveMedia/include/AMRAudioSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedSource.hh"
+ #endif
+ 
+-class AMRAudioSource: public FramedSource {
++class LIVEMEDIA_API AMRAudioSource: public FramedSource {
+ public:
+   Boolean isWideband() const { return fIsWideband; }
+   unsigned numChannels() const { return fNumChannels; }
+diff --git a/liveMedia/include/AVIFileSink.hh b/liveMedia/include/AVIFileSink.hh
+index e7b55fb..091d831 100644
+--- a/liveMedia/include/AVIFileSink.hh
++++ b/liveMedia/include/AVIFileSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MediaSession.hh"
+ #endif
+ 
+-class AVIFileSink: public Medium {
++class LIVEMEDIA_API AVIFileSink: public Medium {
+ public:
+   static AVIFileSink* createNew(UsageEnvironment& env,
+ 				MediaSession& inputSession,
+diff --git a/liveMedia/include/AudioInputDevice.hh b/liveMedia/include/AudioInputDevice.hh
+index bf68a1f..eb924f6 100644
+--- a/liveMedia/include/AudioInputDevice.hh
++++ b/liveMedia/include/AudioInputDevice.hh
+@@ -24,7 +24,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedSource.hh"
+ #endif
+ 
+-class AudioPortNames {
++class LIVEMEDIA_API AudioPortNames {
+ public:
+   AudioPortNames();
+   virtual ~AudioPortNames();
+@@ -33,7 +33,7 @@ public:
+   char** portName;
+ };
+ 
+-class AudioInputDevice: public FramedSource {
++class LIVEMEDIA_API AudioInputDevice: public FramedSource {
+ public:
+   unsigned char bitsPerSample() const { return fBitsPerSample; }
+   unsigned char numChannels() const { return fNumChannels; }
+diff --git a/liveMedia/include/AudioRTPSink.hh b/liveMedia/include/AudioRTPSink.hh
+index 52e2222..e4ddd8a 100644
+--- a/liveMedia/include/AudioRTPSink.hh
++++ b/liveMedia/include/AudioRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSink.hh"
+ #endif
+ 
+-class AudioRTPSink: public MultiFramedRTPSink {
++class LIVEMEDIA_API AudioRTPSink: public MultiFramedRTPSink {
+ protected:
+   AudioRTPSink(UsageEnvironment& env,
+ 	       Groupsock* rtpgs, unsigned char rtpPayloadType,
+diff --git a/liveMedia/include/Base64.hh b/liveMedia/include/Base64.hh
+index 0d7db5d..d0e0f84 100644
+--- a/liveMedia/include/Base64.hh
++++ b/liveMedia/include/Base64.hh
+@@ -25,6 +25,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "Boolean.hh"
+ #endif
+ 
++#include "export.h"
++
+ unsigned char* base64Decode(char const* in, unsigned& resultSize,
+ 			    Boolean trimTrailingZeros = True);
+     // returns a newly allocated array - of size "resultSize" - that
+diff --git a/liveMedia/include/BasicUDPSink.hh b/liveMedia/include/BasicUDPSink.hh
+index 2305534..5f68f31 100644
+--- a/liveMedia/include/BasicUDPSink.hh
++++ b/liveMedia/include/BasicUDPSink.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include <Groupsock.hh>
+ #endif
+ 
+-class BasicUDPSink: public MediaSink {
++class LIVEMEDIA_API BasicUDPSink: public MediaSink {
+ public:
+   static BasicUDPSink* createNew(UsageEnvironment& env, Groupsock* gs,
+ 				  unsigned maxPayloadSize = 1450);
+diff --git a/liveMedia/include/BasicUDPSource.hh b/liveMedia/include/BasicUDPSource.hh
+index 7619163..a120170 100644
+--- a/liveMedia/include/BasicUDPSource.hh
++++ b/liveMedia/include/BasicUDPSource.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "Groupsock.hh"
+ #endif
+ 
+-class BasicUDPSource: public FramedSource {
++class LIVEMEDIA_API BasicUDPSource: public FramedSource {
+ public:
+   static BasicUDPSource* createNew(UsageEnvironment& env, Groupsock* inputGS);
+ 
+diff --git a/liveMedia/include/BitVector.hh b/liveMedia/include/BitVector.hh
+index 5b04943..6fa85f5 100644
+--- a/liveMedia/include/BitVector.hh
++++ b/liveMedia/include/BitVector.hh
+@@ -25,7 +25,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "Boolean.hh"
+ #endif
+ 
+-class BitVector {
++#include "export.h"
++
++class LIVEMEDIA_API BitVector {
+ public:
+   BitVector(unsigned char* baseBytePtr,
+ 	    unsigned baseBitOffset,
+diff --git a/liveMedia/include/ByteStreamFileSource.hh b/liveMedia/include/ByteStreamFileSource.hh
+index 3ea8974..62b0ac4 100644
+--- a/liveMedia/include/ByteStreamFileSource.hh
++++ b/liveMedia/include/ByteStreamFileSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedFileSource.hh"
+ #endif
+ 
+-class ByteStreamFileSource: public FramedFileSource {
++class LIVEMEDIA_API ByteStreamFileSource: public FramedFileSource {
+ public:
+   static ByteStreamFileSource* createNew(UsageEnvironment& env,
+ 					 char const* fileName,
+diff --git a/liveMedia/include/ByteStreamMemoryBufferSource.hh b/liveMedia/include/ByteStreamMemoryBufferSource.hh
+index b3b0ceb..d0bf0db 100644
+--- a/liveMedia/include/ByteStreamMemoryBufferSource.hh
++++ b/liveMedia/include/ByteStreamMemoryBufferSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedSource.hh"
+ #endif
+ 
+-class ByteStreamMemoryBufferSource: public FramedSource {
++class LIVEMEDIA_API ByteStreamMemoryBufferSource: public FramedSource {
+ public:
+   static ByteStreamMemoryBufferSource* createNew(UsageEnvironment& env,
+ 						 u_int8_t* buffer, u_int64_t bufferSize,
+diff --git a/liveMedia/include/ByteStreamMultiFileSource.hh b/liveMedia/include/ByteStreamMultiFileSource.hh
+index 9519cfc..35296ae 100644
+--- a/liveMedia/include/ByteStreamMultiFileSource.hh
++++ b/liveMedia/include/ByteStreamMultiFileSource.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "ByteStreamFileSource.hh"
+ #endif
+ 
+-class ByteStreamMultiFileSource: public FramedSource {
++class LIVEMEDIA_API ByteStreamMultiFileSource: public FramedSource {
+ public:
+   static ByteStreamMultiFileSource*
+   createNew(UsageEnvironment& env, char const** fileNameArray,
+diff --git a/liveMedia/include/DVVideoFileServerMediaSubsession.hh b/liveMedia/include/DVVideoFileServerMediaSubsession.hh
+index 1e11507..a326196 100644
+--- a/liveMedia/include/DVVideoFileServerMediaSubsession.hh
++++ b/liveMedia/include/DVVideoFileServerMediaSubsession.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileServerMediaSubsession.hh"
+ #endif
+ 
+-class DVVideoFileServerMediaSubsession: public FileServerMediaSubsession{
++class LIVEMEDIA_API DVVideoFileServerMediaSubsession: public FileServerMediaSubsession{
+ public:
+   static DVVideoFileServerMediaSubsession*
+   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
+diff --git a/liveMedia/include/DVVideoRTPSink.hh b/liveMedia/include/DVVideoRTPSink.hh
+index 9f5a2db..425d577 100644
+--- a/liveMedia/include/DVVideoRTPSink.hh
++++ b/liveMedia/include/DVVideoRTPSink.hh
+@@ -29,7 +29,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "DVVideoStreamFramer.hh"
+ #endif
+ 
+-class DVVideoRTPSink: public VideoRTPSink {
++class LIVEMEDIA_API DVVideoRTPSink: public VideoRTPSink {
+ public:
+   static DVVideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
+   char const* auxSDPLineFromFramer(DVVideoStreamFramer* framerSource);
+diff --git a/liveMedia/include/DVVideoRTPSource.hh b/liveMedia/include/DVVideoRTPSource.hh
+index 832d396..6c2a4bf 100644
+--- a/liveMedia/include/DVVideoRTPSource.hh
++++ b/liveMedia/include/DVVideoRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class DVVideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API DVVideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static DVVideoRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/DVVideoStreamFramer.hh b/liveMedia/include/DVVideoStreamFramer.hh
+index adfdc42..9a09aeb 100644
+--- a/liveMedia/include/DVVideoStreamFramer.hh
++++ b/liveMedia/include/DVVideoStreamFramer.hh
+@@ -30,7 +30,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #define DV_SAVED_INITIAL_BLOCKS_SIZE ((DV_NUM_BLOCKS_PER_SEQUENCE+6-1)*DV_DIF_BLOCK_SIZE)
+     /* enough data to ensure that it contains an intact 6-block header (which occurs at the start of a 150-block sequence) */
+ 
+-class DVVideoStreamFramer: public FramedFilter {
++class LIVEMEDIA_API DVVideoStreamFramer: public FramedFilter {
+ public:
+   static DVVideoStreamFramer*
+   createNew(UsageEnvironment& env, FramedSource* inputSource,
+diff --git a/liveMedia/include/DeviceSource.hh b/liveMedia/include/DeviceSource.hh
+index c41bef7..58de7ed 100644
+--- a/liveMedia/include/DeviceSource.hh
++++ b/liveMedia/include/DeviceSource.hh
+@@ -29,11 +29,11 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #endif
+ 
+ // The following class can be used to define specific encoder parameters
+-class DeviceParameters {
++class LIVEMEDIA_API DeviceParameters {
+   //%%% TO BE WRITTEN %%%
+ };
+ 
+-class DeviceSource: public FramedSource {
++class LIVEMEDIA_API DeviceSource: public FramedSource {
+ public:
+   static DeviceSource* createNew(UsageEnvironment& env,
+ 				 DeviceParameters params);
+diff --git a/liveMedia/include/DigestAuthentication.hh b/liveMedia/include/DigestAuthentication.hh
+index 1b637b9..f0f497d 100644
+--- a/liveMedia/include/DigestAuthentication.hh
++++ b/liveMedia/include/DigestAuthentication.hh
+@@ -25,11 +25,13 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include <Boolean.hh>
+ #endif
+ 
++#include "export.h"
++
+ // A class used for digest authentication.
+ // The "realm", and "nonce" fields are supplied by the server
+ // (in a "401 Unauthorized" response).
+ // The "username" and "password" fields are supplied by the client.
+-class Authenticator {
++class LIVEMEDIA_API Authenticator {
+ public:
+   Authenticator();
+   Authenticator(char const* username, char const* password, Boolean passwordIsMD5 = False);
+diff --git a/liveMedia/include/FileServerMediaSubsession.hh b/liveMedia/include/FileServerMediaSubsession.hh
+index 963273e..32fe8a6 100644
+--- a/liveMedia/include/FileServerMediaSubsession.hh
++++ b/liveMedia/include/FileServerMediaSubsession.hh
+@@ -29,7 +29,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "OnDemandServerMediaSubsession.hh"
+ #endif
+ 
+-class FileServerMediaSubsession: public OnDemandServerMediaSubsession {
++class LIVEMEDIA_API FileServerMediaSubsession: public OnDemandServerMediaSubsession {
+ protected: // we're a virtual base class
+   FileServerMediaSubsession(UsageEnvironment& env, char const* fileName,
+ 			    Boolean reuseFirstSource);
+diff --git a/liveMedia/include/FileSink.hh b/liveMedia/include/FileSink.hh
+index 19fe796..b45da00 100644
+--- a/liveMedia/include/FileSink.hh
++++ b/liveMedia/include/FileSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MediaSink.hh"
+ #endif
+ 
+-class FileSink: public MediaSink {
++class LIVEMEDIA_API FileSink: public MediaSink {
+ public:
+   static FileSink* createNew(UsageEnvironment& env, char const* fileName,
+ 			     unsigned bufferSize = 20000,
+diff --git a/liveMedia/include/FramedFileSource.hh b/liveMedia/include/FramedFileSource.hh
+index 2804f7c..a798766 100644
+--- a/liveMedia/include/FramedFileSource.hh
++++ b/liveMedia/include/FramedFileSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedSource.hh"
+ #endif
+ 
+-class FramedFileSource: public FramedSource {
++class LIVEMEDIA_API FramedFileSource: public FramedSource {
+ protected:
+   FramedFileSource(UsageEnvironment& env, FILE* fid); // abstract base class
+   virtual ~FramedFileSource();
+diff --git a/liveMedia/include/FramedFilter.hh b/liveMedia/include/FramedFilter.hh
+index 9d77c67..6efd2cc 100644
+--- a/liveMedia/include/FramedFilter.hh
++++ b/liveMedia/include/FramedFilter.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedSource.hh"
+ #endif
+ 
+-class FramedFilter: public FramedSource {
++class LIVEMEDIA_API FramedFilter: public FramedSource {
+ public:
+   FramedSource* inputSource() const { return fInputSource; }
+ 
+diff --git a/liveMedia/include/FramedSource.hh b/liveMedia/include/FramedSource.hh
+index 8d78eba..d1086c4 100644
+--- a/liveMedia/include/FramedSource.hh
++++ b/liveMedia/include/FramedSource.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MediaSource.hh"
+ #endif
+ 
+-class FramedSource: public MediaSource {
++class LIVEMEDIA_API FramedSource: public MediaSource {
+ public:
+   static Boolean lookupByName(UsageEnvironment& env, char const* sourceName,
+ 			      FramedSource*& resultSource);
+diff --git a/liveMedia/include/GSMAudioRTPSink.hh b/liveMedia/include/GSMAudioRTPSink.hh
+index 8c13717..0895d9a 100644
+--- a/liveMedia/include/GSMAudioRTPSink.hh
++++ b/liveMedia/include/GSMAudioRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "AudioRTPSink.hh"
+ #endif
+ 
+-class GSMAudioRTPSink: public AudioRTPSink {
++class LIVEMEDIA_API GSMAudioRTPSink: public AudioRTPSink {
+ public:
+   static GSMAudioRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
+ 
+diff --git a/liveMedia/include/GenericMediaServer.hh b/liveMedia/include/GenericMediaServer.hh
+index 583abdb..1bbb8d7 100644
+--- a/liveMedia/include/GenericMediaServer.hh
++++ b/liveMedia/include/GenericMediaServer.hh
+@@ -41,7 +41,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ typedef void lookupServerMediaSessionCompletionFunc(void* clientData,
+ 						    ServerMediaSession* sessionLookedUp);
+ 
+-class GenericMediaServer: public Medium {
++class LIVEMEDIA_API GenericMediaServer: public Medium {
+ public:
+   virtual void addServerMediaSession(ServerMediaSession* serverMediaSession);
+ 
+@@ -195,7 +195,7 @@ private:
+ 
+ // A data structure used for optional user/password authentication:
+ 
+-class UserAuthenticationDatabase {
++class LIVEMEDIA_API UserAuthenticationDatabase {
+ public:
+   UserAuthenticationDatabase(char const* realm = NULL,
+ 			     Boolean passwordsAreMD5 = False);
+diff --git a/liveMedia/include/H261VideoRTPSource.hh b/liveMedia/include/H261VideoRTPSource.hh
+index 3a44d96..d0f4a6b 100644
+--- a/liveMedia/include/H261VideoRTPSource.hh
++++ b/liveMedia/include/H261VideoRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class H261VideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API H261VideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static H261VideoRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/H263plusVideoFileServerMediaSubsession.hh b/liveMedia/include/H263plusVideoFileServerMediaSubsession.hh
+index 1e94fa9..ef2ee34 100644
+--- a/liveMedia/include/H263plusVideoFileServerMediaSubsession.hh
++++ b/liveMedia/include/H263plusVideoFileServerMediaSubsession.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileServerMediaSubsession.hh"
+ #endif
+ 
+-class H263plusVideoFileServerMediaSubsession: public FileServerMediaSubsession{
++class LIVEMEDIA_API H263plusVideoFileServerMediaSubsession: public FileServerMediaSubsession{
+ public:
+   static H263plusVideoFileServerMediaSubsession*
+   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
+diff --git a/liveMedia/include/H263plusVideoRTPSink.hh b/liveMedia/include/H263plusVideoRTPSink.hh
+index 5b6b216..7743d30 100644
+--- a/liveMedia/include/H263plusVideoRTPSink.hh
++++ b/liveMedia/include/H263plusVideoRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "VideoRTPSink.hh"
+ #endif
+ 
+-class H263plusVideoRTPSink: public VideoRTPSink {
++class LIVEMEDIA_API H263plusVideoRTPSink: public VideoRTPSink {
+ public:
+   static H263plusVideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs,
+ 					 unsigned char rtpPayloadFormat,
+diff --git a/liveMedia/include/H263plusVideoRTPSource.hh b/liveMedia/include/H263plusVideoRTPSource.hh
+index 7ddbef0..539c01c 100644
+--- a/liveMedia/include/H263plusVideoRTPSource.hh
++++ b/liveMedia/include/H263plusVideoRTPSource.hh
+@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 
+ #define SPECIAL_HEADER_BUFFER_SIZE 1000
+ 
+-class H263plusVideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API H263plusVideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static H263plusVideoRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/H263plusVideoStreamFramer.hh b/liveMedia/include/H263plusVideoStreamFramer.hh
+index 18b3e8f..12f9bd9 100644
+--- a/liveMedia/include/H263plusVideoStreamFramer.hh
++++ b/liveMedia/include/H263plusVideoStreamFramer.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #endif
+ 
+ 
+-class H263plusVideoStreamFramer: public FramedFilter {
++class LIVEMEDIA_API H263plusVideoStreamFramer: public FramedFilter {
+ public:
+ 
+   static H263plusVideoStreamFramer* createNew(UsageEnvironment& env, FramedSource* inputSource);
+diff --git a/liveMedia/include/H264VideoFileServerMediaSubsession.hh b/liveMedia/include/H264VideoFileServerMediaSubsession.hh
+index 055fdc0..0590afa 100644
+--- a/liveMedia/include/H264VideoFileServerMediaSubsession.hh
++++ b/liveMedia/include/H264VideoFileServerMediaSubsession.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileServerMediaSubsession.hh"
+ #endif
+ 
+-class H264VideoFileServerMediaSubsession: public FileServerMediaSubsession {
++class LIVEMEDIA_API H264VideoFileServerMediaSubsession: public FileServerMediaSubsession {
+ public:
+   static H264VideoFileServerMediaSubsession*
+   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
+diff --git a/liveMedia/include/H264VideoFileSink.hh b/liveMedia/include/H264VideoFileSink.hh
+index e85a263..d6fe1df 100644
+--- a/liveMedia/include/H264VideoFileSink.hh
++++ b/liveMedia/include/H264VideoFileSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "H264or5VideoFileSink.hh"
+ #endif
+ 
+-class H264VideoFileSink: public H264or5VideoFileSink {
++class LIVEMEDIA_API H264VideoFileSink: public H264or5VideoFileSink {
+ public:
+   static H264VideoFileSink* createNew(UsageEnvironment& env, char const* fileName,
+ 				      char const* sPropParameterSetsStr = NULL,
+diff --git a/liveMedia/include/H264VideoRTPSink.hh b/liveMedia/include/H264VideoRTPSink.hh
+index f5c6057..ed31690 100644
+--- a/liveMedia/include/H264VideoRTPSink.hh
++++ b/liveMedia/include/H264VideoRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "H264or5VideoRTPSink.hh"
+ #endif
+ 
+-class H264VideoRTPSink: public H264or5VideoRTPSink {
++class LIVEMEDIA_API H264VideoRTPSink: public H264or5VideoRTPSink {
+ public:
+   static H264VideoRTPSink*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
+diff --git a/liveMedia/include/H264VideoRTPSource.hh b/liveMedia/include/H264VideoRTPSource.hh
+index 02f7b3f..1a9ea26 100644
+--- a/liveMedia/include/H264VideoRTPSource.hh
++++ b/liveMedia/include/H264VideoRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class H264VideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API H264VideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static H264VideoRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+@@ -51,7 +51,7 @@ private:
+   unsigned char fCurPacketNALUnitType;
+ };
+ 
+-class SPropRecord {
++class LIVEMEDIA_API SPropRecord {
+ public:
+   ~SPropRecord() { delete[] sPropBytes; }
+ 
+diff --git a/liveMedia/include/H264VideoStreamDiscreteFramer.hh b/liveMedia/include/H264VideoStreamDiscreteFramer.hh
+index 5feac72..0061f72 100644
+--- a/liveMedia/include/H264VideoStreamDiscreteFramer.hh
++++ b/liveMedia/include/H264VideoStreamDiscreteFramer.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "H264or5VideoStreamDiscreteFramer.hh"
+ #endif
+ 
+-class H264VideoStreamDiscreteFramer: public H264or5VideoStreamDiscreteFramer {
++class LIVEMEDIA_API H264VideoStreamDiscreteFramer: public H264or5VideoStreamDiscreteFramer {
+ public:
+   static H264VideoStreamDiscreteFramer*
+   createNew(UsageEnvironment& env, FramedSource* inputSource,
+diff --git a/liveMedia/include/H264VideoStreamFramer.hh b/liveMedia/include/H264VideoStreamFramer.hh
+index 6059840..aa2ff7d 100644
+--- a/liveMedia/include/H264VideoStreamFramer.hh
++++ b/liveMedia/include/H264VideoStreamFramer.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "H264or5VideoStreamFramer.hh"
+ #endif
+ 
+-class H264VideoStreamFramer: public H264or5VideoStreamFramer {
++class LIVEMEDIA_API H264VideoStreamFramer: public H264or5VideoStreamFramer {
+ public:
+   static H264VideoStreamFramer* createNew(UsageEnvironment& env, FramedSource* inputSource,
+ 					  Boolean includeStartCodeInOutput = False,
+diff --git a/liveMedia/include/H264or5VideoFileSink.hh b/liveMedia/include/H264or5VideoFileSink.hh
+index 3ec214a..d603218 100644
+--- a/liveMedia/include/H264or5VideoFileSink.hh
++++ b/liveMedia/include/H264or5VideoFileSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileSink.hh"
+ #endif
+ 
+-class H264or5VideoFileSink: public FileSink {
++class LIVEMEDIA_API H264or5VideoFileSink: public FileSink {
+ protected:
+   H264or5VideoFileSink(UsageEnvironment& env, FILE* fid,
+ 		       unsigned bufferSize, char const* perFrameFileNamePrefix,
+diff --git a/liveMedia/include/H264or5VideoRTPSink.hh b/liveMedia/include/H264or5VideoRTPSink.hh
+index 2c2bfca..3cbd757 100644
+--- a/liveMedia/include/H264or5VideoRTPSink.hh
++++ b/liveMedia/include/H264or5VideoRTPSink.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedFilter.hh"
+ #endif
+ 
+-class H264or5VideoRTPSink: public VideoRTPSink {
++class LIVEMEDIA_API H264or5VideoRTPSink: public VideoRTPSink {
+ protected:
+   H264or5VideoRTPSink(int hNumber, // 264 or 265
+ 		      UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat,
+diff --git a/liveMedia/include/H264or5VideoStreamDiscreteFramer.hh b/liveMedia/include/H264or5VideoStreamDiscreteFramer.hh
+index f02b903..570c20b 100644
+--- a/liveMedia/include/H264or5VideoStreamDiscreteFramer.hh
++++ b/liveMedia/include/H264or5VideoStreamDiscreteFramer.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "H264or5VideoStreamFramer.hh"
+ #endif
+ 
+-class H264or5VideoStreamDiscreteFramer: public H264or5VideoStreamFramer {
++class LIVEMEDIA_API H264or5VideoStreamDiscreteFramer: public H264or5VideoStreamFramer {
+ protected:
+   H264or5VideoStreamDiscreteFramer(int hNumber, UsageEnvironment& env, FramedSource* inputSource,
+ 				   Boolean includeStartCodeInOutput,
+diff --git a/liveMedia/include/H264or5VideoStreamFramer.hh b/liveMedia/include/H264or5VideoStreamFramer.hh
+index 0dc5b7a..393b5a6 100644
+--- a/liveMedia/include/H264or5VideoStreamFramer.hh
++++ b/liveMedia/include/H264or5VideoStreamFramer.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MPEGVideoStreamFramer.hh"
+ #endif
+ 
+-class H264or5VideoStreamFramer: public MPEGVideoStreamFramer {
++class LIVEMEDIA_API H264or5VideoStreamFramer: public MPEGVideoStreamFramer {
+ public:
+   void getVPSandSPSandPPS(u_int8_t*& vps, unsigned& vpsSize,
+ 			  u_int8_t*& sps, unsigned& spsSize,
+diff --git a/liveMedia/include/H265VideoFileServerMediaSubsession.hh b/liveMedia/include/H265VideoFileServerMediaSubsession.hh
+index eff7a06..dc10de7 100644
+--- a/liveMedia/include/H265VideoFileServerMediaSubsession.hh
++++ b/liveMedia/include/H265VideoFileServerMediaSubsession.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileServerMediaSubsession.hh"
+ #endif
+ 
+-class H265VideoFileServerMediaSubsession: public FileServerMediaSubsession {
++class LIVEMEDIA_API H265VideoFileServerMediaSubsession: public FileServerMediaSubsession {
+ public:
+   static H265VideoFileServerMediaSubsession*
+   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
+diff --git a/liveMedia/include/H265VideoFileSink.hh b/liveMedia/include/H265VideoFileSink.hh
+index 928404a..1236759 100644
+--- a/liveMedia/include/H265VideoFileSink.hh
++++ b/liveMedia/include/H265VideoFileSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "H264or5VideoFileSink.hh"
+ #endif
+ 
+-class H265VideoFileSink: public H264or5VideoFileSink {
++class LIVEMEDIA_API H265VideoFileSink: public H264or5VideoFileSink {
+ public:
+   static H265VideoFileSink* createNew(UsageEnvironment& env, char const* fileName,
+ 				      char const* sPropVPSStr = NULL,
+diff --git a/liveMedia/include/H265VideoRTPSink.hh b/liveMedia/include/H265VideoRTPSink.hh
+index 941aa27..ff4a310 100644
+--- a/liveMedia/include/H265VideoRTPSink.hh
++++ b/liveMedia/include/H265VideoRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "H264or5VideoRTPSink.hh"
+ #endif
+ 
+-class H265VideoRTPSink: public H264or5VideoRTPSink {
++class LIVEMEDIA_API H265VideoRTPSink: public H264or5VideoRTPSink {
+ public:
+   static H265VideoRTPSink*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
+diff --git a/liveMedia/include/H265VideoRTPSource.hh b/liveMedia/include/H265VideoRTPSource.hh
+index 22bcead..80268c8 100644
+--- a/liveMedia/include/H265VideoRTPSource.hh
++++ b/liveMedia/include/H265VideoRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class H265VideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API H265VideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static H265VideoRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/H265VideoStreamDiscreteFramer.hh b/liveMedia/include/H265VideoStreamDiscreteFramer.hh
+index 98fff51..d0f74cd 100644
+--- a/liveMedia/include/H265VideoStreamDiscreteFramer.hh
++++ b/liveMedia/include/H265VideoStreamDiscreteFramer.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "H264or5VideoStreamDiscreteFramer.hh"
+ #endif
+ 
+-class H265VideoStreamDiscreteFramer: public H264or5VideoStreamDiscreteFramer {
++class LIVEMEDIA_API H265VideoStreamDiscreteFramer: public H264or5VideoStreamDiscreteFramer {
+ public:
+   static H265VideoStreamDiscreteFramer*
+   createNew(UsageEnvironment& env, FramedSource* inputSource,
+diff --git a/liveMedia/include/H265VideoStreamFramer.hh b/liveMedia/include/H265VideoStreamFramer.hh
+index bf5e036..a87c2ba 100644
+--- a/liveMedia/include/H265VideoStreamFramer.hh
++++ b/liveMedia/include/H265VideoStreamFramer.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "H264or5VideoStreamFramer.hh"
+ #endif
+ 
+-class H265VideoStreamFramer: public H264or5VideoStreamFramer {
++class LIVEMEDIA_API H265VideoStreamFramer: public H264or5VideoStreamFramer {
+ public:
+   static H265VideoStreamFramer* createNew(UsageEnvironment& env, FramedSource* inputSource,
+ 					  Boolean includeStartCodeInOutput = False,
+diff --git a/liveMedia/include/HLSSegmenter.hh b/liveMedia/include/HLSSegmenter.hh
+index 7457377..d6ff7a4 100644
+--- a/liveMedia/include/HLSSegmenter.hh
++++ b/liveMedia/include/HLSSegmenter.hh
+@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MediaSink.hh"
+ #endif
+ 
+-class HLSSegmenter: public MediaSink {
++class LIVEMEDIA_API HLSSegmenter: public MediaSink {
+ public:
+   typedef void (onEndOfSegmentFunc)(void* clientData,
+ 				    char const* segmentFileName, double segmentDuration);
+diff --git a/liveMedia/include/InputFile.hh b/liveMedia/include/InputFile.hh
+index d51d529..ce9e7af 100644
+--- a/liveMedia/include/InputFile.hh
++++ b/liveMedia/include/InputFile.hh
+@@ -46,22 +46,22 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include <sys/stat.h>
+ #endif
+ 
+-FILE* OpenInputFile(UsageEnvironment& env, char const* fileName);
++LIVEMEDIA_API FILE* OpenInputFile(UsageEnvironment& env, char const* fileName);
+ 
+-void CloseInputFile(FILE* fid);
++LIVEMEDIA_API void CloseInputFile(FILE* fid);
+ 
+ #undef GetFileSize // because some platforms already define this as a macro
+-u_int64_t GetFileSize(char const* fileName, FILE* fid);
++LIVEMEDIA_API u_int64_t GetFileSize(char const* fileName, FILE* fid);
+     // 0 means zero-length, unbounded, or unknown
+ 
+-int64_t SeekFile64(FILE *fid, int64_t offset, int whence);
++LIVEMEDIA_API int64_t SeekFile64(FILE *fid, int64_t offset, int whence);
+     // A platform-independent routine for seeking within (possibly) large files
+ 
+-int64_t TellFile64(FILE *fid);
++LIVEMEDIA_API int64_t TellFile64(FILE *fid);
+     // A platform-independent routine for reporting the position within
+     // (possibly) large files
+ 
+-Boolean FileIsSeekable(FILE *fid);
++LIVEMEDIA_API Boolean FileIsSeekable(FILE *fid);
+     // Tests whether "fid" is seekable, by trying to seek within it.
+ 
+ #endif
+diff --git a/liveMedia/include/JPEG2000VideoRTPSink.hh b/liveMedia/include/JPEG2000VideoRTPSink.hh
+index 6ab61f7..4d0c14e 100644
+--- a/liveMedia/include/JPEG2000VideoRTPSink.hh
++++ b/liveMedia/include/JPEG2000VideoRTPSink.hh
+@@ -24,7 +24,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "VideoRTPSink.hh"
+ #endif
+ 
+-class JPEG2000VideoRTPSink: public VideoRTPSink {
++class LIVEMEDIA_API JPEG2000VideoRTPSink: public VideoRTPSink {
+ public:
+   static JPEG2000VideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
+ 
+diff --git a/liveMedia/include/JPEG2000VideoRTPSource.hh b/liveMedia/include/JPEG2000VideoRTPSource.hh
+index dc148d5..5b44d5c 100644
+--- a/liveMedia/include/JPEG2000VideoRTPSource.hh
++++ b/liveMedia/include/JPEG2000VideoRTPSource.hh
+@@ -23,7 +23,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class JPEG2000VideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API JPEG2000VideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static JPEG2000VideoRTPSource* createNew(UsageEnvironment& env, Groupsock* RTPgs,
+ 					   unsigned char rtpPayloadFormat,
+diff --git a/liveMedia/include/JPEGVideoRTPSink.hh b/liveMedia/include/JPEGVideoRTPSink.hh
+index 5cd9190..c9b0512 100644
+--- a/liveMedia/include/JPEGVideoRTPSink.hh
++++ b/liveMedia/include/JPEGVideoRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "VideoRTPSink.hh"
+ #endif
+ 
+-class JPEGVideoRTPSink: public VideoRTPSink {
++class LIVEMEDIA_API JPEGVideoRTPSink: public VideoRTPSink {
+ public:
+   static JPEGVideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
+ 
+diff --git a/liveMedia/include/JPEGVideoRTPSource.hh b/liveMedia/include/JPEGVideoRTPSource.hh
+index ffcc68e..f15392b 100644
+--- a/liveMedia/include/JPEGVideoRTPSource.hh
++++ b/liveMedia/include/JPEGVideoRTPSource.hh
+@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 
+ #define MAX_JPEG_HEADER_SIZE 1024
+ 
+-class JPEGVideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API JPEGVideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static JPEGVideoRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/JPEGVideoSource.hh b/liveMedia/include/JPEGVideoSource.hh
+index cc77e55..a38274b 100644
+--- a/liveMedia/include/JPEGVideoSource.hh
++++ b/liveMedia/include/JPEGVideoSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedSource.hh"
+ #endif
+ 
+-class JPEGVideoSource: public FramedSource {
++class LIVEMEDIA_API JPEGVideoSource: public FramedSource {
+ public:
+   virtual u_int8_t type() = 0;
+   virtual u_int8_t qFactor() = 0;
+diff --git a/liveMedia/include/Locale.hh b/liveMedia/include/Locale.hh
+index 1c074c6..56935b3 100644
+--- a/liveMedia/include/Locale.hh
++++ b/liveMedia/include/Locale.hh
+@@ -53,10 +53,12 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #endif
+ #endif
+ 
++#include "export.h"
++
+ 
+ enum LocaleCategory { All, Numeric }; // define and implement more categories later, as needed
+ 
+-class Locale {
++class LIVEMEDIA_API Locale {
+ public:
+   Locale(char const* newLocale, LocaleCategory category = All);
+   virtual ~Locale();
+diff --git a/liveMedia/include/MIKEY.hh b/liveMedia/include/MIKEY.hh
+index a2520f6..2a44937 100644
+--- a/liveMedia/include/MIKEY.hh
++++ b/liveMedia/include/MIKEY.hh
+@@ -57,7 +57,7 @@ private:
+   void addNewPayload(class MIKEYPayload* newPayload);
+   Boolean parseHDRPayload(u_int8_t const*& ptr, u_int8_t const* endPtr, u_int8_t& nextPayloadType);
+   Boolean parseNonHDRPayload(u_int8_t const*& ptr, u_int8_t const* endPtr, u_int8_t& nextPayloadType);
+-  
++
+ private:
+   // Encryption/authentication parameters, either set by default
+   // (if the first (parameterless) constructor is used), or set by parsing an input message
+diff --git a/liveMedia/include/MP3ADU.hh b/liveMedia/include/MP3ADU.hh
+index 089fd38..115b720 100644
+--- a/liveMedia/include/MP3ADU.hh
++++ b/liveMedia/include/MP3ADU.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedFilter.hh"
+ #endif
+ 
+-class ADUFromMP3Source: public FramedFilter {
++class LIVEMEDIA_API ADUFromMP3Source: public FramedFilter {
+ public:
+   static ADUFromMP3Source* createNew(UsageEnvironment& env,
+ 				     FramedSource* inputSource,
+@@ -63,7 +63,7 @@ private:
+   unsigned fFrameCounter;
+ };
+ 
+-class MP3FromADUSource: public FramedFilter {
++class LIVEMEDIA_API MP3FromADUSource: public FramedFilter {
+ public:
+   static MP3FromADUSource* createNew(UsageEnvironment& env,
+ 				     FramedSource* inputSource,
+diff --git a/liveMedia/include/MP3ADURTPSink.hh b/liveMedia/include/MP3ADURTPSink.hh
+index fa7c09e..5867b0c 100644
+--- a/liveMedia/include/MP3ADURTPSink.hh
++++ b/liveMedia/include/MP3ADURTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "AudioRTPSink.hh"
+ #endif
+ 
+-class MP3ADURTPSink: public AudioRTPSink {
++class LIVEMEDIA_API MP3ADURTPSink: public AudioRTPSink {
+ public:
+   static MP3ADURTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs,
+ 				  unsigned char RTPPayloadType);
+diff --git a/liveMedia/include/MP3ADURTPSource.hh b/liveMedia/include/MP3ADURTPSource.hh
+index ef577ab..5f2b592 100644
+--- a/liveMedia/include/MP3ADURTPSource.hh
++++ b/liveMedia/include/MP3ADURTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class MP3ADURTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API MP3ADURTPSource: public MultiFramedRTPSource {
+ public:
+   static MP3ADURTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/MP3ADUTranscoder.hh b/liveMedia/include/MP3ADUTranscoder.hh
+index 42e6eb5..c128430 100644
+--- a/liveMedia/include/MP3ADUTranscoder.hh
++++ b/liveMedia/include/MP3ADUTranscoder.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedFilter.hh"
+ #endif
+ 
+-class MP3ADUTranscoder: public FramedFilter {
++class LIVEMEDIA_API MP3ADUTranscoder: public FramedFilter {
+ public:
+   static MP3ADUTranscoder* createNew(UsageEnvironment& env,
+ 				  unsigned outBitrate /* in kbps */,
+diff --git a/liveMedia/include/MP3ADUinterleaving.hh b/liveMedia/include/MP3ADUinterleaving.hh
+index fa1a2f0..c5ee45e 100644
+--- a/liveMedia/include/MP3ADUinterleaving.hh
++++ b/liveMedia/include/MP3ADUinterleaving.hh
+@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 
+ // A data structure used to represent an interleaving
+ #define MAX_CYCLE_SIZE 256
+-class Interleaving {
++class LIVEMEDIA_API Interleaving {
+ public:
+   Interleaving(unsigned cycleSize, unsigned char const* cycleArray);
+   virtual ~Interleaving();
+@@ -44,7 +44,7 @@ private:
+ 
+ // This class is used only as a base for the following two:
+ 
+-class MP3ADUinterleaverBase: public FramedFilter {
++class LIVEMEDIA_API MP3ADUinterleaverBase: public FramedFilter {
+ protected:
+   MP3ADUinterleaverBase(UsageEnvironment& env,
+ 			FramedSource* inputSource);
+@@ -66,7 +66,7 @@ protected:
+ // This class is used to convert an ADU sequence from non-interleaved
+ // to interleaved form:
+ 
+-class MP3ADUinterleaver: public MP3ADUinterleaverBase {
++class LIVEMEDIA_API MP3ADUinterleaver: public MP3ADUinterleaverBase {
+ public:
+   static MP3ADUinterleaver* createNew(UsageEnvironment& env,
+ 				      Interleaving const& interleaving,
+@@ -99,7 +99,7 @@ private:
+ // This class is used to convert an ADU sequence from interleaved
+ // to non-interleaved form:
+ 
+-class MP3ADUdeinterleaver: public MP3ADUinterleaverBase {
++class LIVEMEDIA_API MP3ADUdeinterleaver: public MP3ADUinterleaverBase {
+ public:
+   static MP3ADUdeinterleaver* createNew(UsageEnvironment& env,
+ 					FramedSource* inputSource);
+diff --git a/liveMedia/include/MP3AudioFileServerMediaSubsession.hh b/liveMedia/include/MP3AudioFileServerMediaSubsession.hh
+index 6e23b6d..9c5fdef 100644
+--- a/liveMedia/include/MP3AudioFileServerMediaSubsession.hh
++++ b/liveMedia/include/MP3AudioFileServerMediaSubsession.hh
+@@ -33,7 +33,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MP3ADU.hh"
+ #endif
+ 
+-class MP3AudioFileServerMediaSubsession: public FileServerMediaSubsession{
++class LIVEMEDIA_API MP3AudioFileServerMediaSubsession: public FileServerMediaSubsession{
+ public:
+   static MP3AudioFileServerMediaSubsession*
+   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource,
+diff --git a/liveMedia/include/MP3FileSource.hh b/liveMedia/include/MP3FileSource.hh
+index 1fd4b2f..10d7462 100644
+--- a/liveMedia/include/MP3FileSource.hh
++++ b/liveMedia/include/MP3FileSource.hh
+@@ -25,9 +25,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedFileSource.hh"
+ #endif
+ 
+-class MP3StreamState; // forward
++class LIVEMEDIA_API MP3StreamState; // forward
+ 
+-class MP3FileSource: public FramedFileSource {
++class LIVEMEDIA_API MP3FileSource: public FramedFileSource {
+ public:
+   static MP3FileSource* createNew(UsageEnvironment& env, char const* fileName);
+ 
+diff --git a/liveMedia/include/MP3Transcoder.hh b/liveMedia/include/MP3Transcoder.hh
+index ffec240..30af9f0 100644
+--- a/liveMedia/include/MP3Transcoder.hh
++++ b/liveMedia/include/MP3Transcoder.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MP3ADUTranscoder.hh"
+ #endif
+ 
+-class MP3Transcoder: public MP3FromADUSource {
++class LIVEMEDIA_API MP3Transcoder: public MP3FromADUSource {
+ public:
+   static MP3Transcoder* createNew(UsageEnvironment& env,
+ 				  unsigned outBitrate /* in kbps */,
+diff --git a/liveMedia/include/MPEG1or2AudioRTPSink.hh b/liveMedia/include/MPEG1or2AudioRTPSink.hh
+index 00ef685..4700a13 100644
+--- a/liveMedia/include/MPEG1or2AudioRTPSink.hh
++++ b/liveMedia/include/MPEG1or2AudioRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "AudioRTPSink.hh"
+ #endif
+ 
+-class MPEG1or2AudioRTPSink: public AudioRTPSink {
++class LIVEMEDIA_API MPEG1or2AudioRTPSink: public AudioRTPSink {
+ public:
+   static MPEG1or2AudioRTPSink* createNew(UsageEnvironment& env,
+ 				     Groupsock* RTPgs);
+diff --git a/liveMedia/include/MPEG1or2AudioRTPSource.hh b/liveMedia/include/MPEG1or2AudioRTPSource.hh
+index fa78e03..a9089d4 100644
+--- a/liveMedia/include/MPEG1or2AudioRTPSource.hh
++++ b/liveMedia/include/MPEG1or2AudioRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class MPEG1or2AudioRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API MPEG1or2AudioRTPSource: public MultiFramedRTPSource {
+ public:
+   static MPEG1or2AudioRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/MPEG1or2AudioStreamFramer.hh b/liveMedia/include/MPEG1or2AudioStreamFramer.hh
+index 244bcc5..9b0841a 100644
+--- a/liveMedia/include/MPEG1or2AudioStreamFramer.hh
++++ b/liveMedia/include/MPEG1or2AudioStreamFramer.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedFilter.hh"
+ #endif
+ 
+-class MPEG1or2AudioStreamFramer: public FramedFilter {
++class LIVEMEDIA_API MPEG1or2AudioStreamFramer: public FramedFilter {
+ public:
+   static MPEG1or2AudioStreamFramer*
+   createNew(UsageEnvironment& env, FramedSource* inputSource,
+diff --git a/liveMedia/include/MPEG1or2Demux.hh b/liveMedia/include/MPEG1or2Demux.hh
+index a09364d..b339e11 100644
+--- a/liveMedia/include/MPEG1or2Demux.hh
++++ b/liveMedia/include/MPEG1or2Demux.hh
+@@ -25,11 +25,11 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedSource.hh"
+ #endif
+ 
+-class MPEG1or2DemuxedElementaryStream; // forward
++class LIVEMEDIA_API MPEG1or2DemuxedElementaryStream; // forward
+ 
+ typedef void MPEG1or2DemuxOnDeletionFunc(void* objectToNotify, class MPEG1or2Demux* demuxBeingDeleted);
+ 
+-class MPEG1or2Demux: public Medium {
++class LIVEMEDIA_API MPEG1or2Demux: public Medium {
+ public:
+   static MPEG1or2Demux* createNew(UsageEnvironment& env,
+ 				  FramedSource* inputSource,
+diff --git a/liveMedia/include/MPEG1or2DemuxedElementaryStream.hh b/liveMedia/include/MPEG1or2DemuxedElementaryStream.hh
+index 276abe7..77456fb 100644
+--- a/liveMedia/include/MPEG1or2DemuxedElementaryStream.hh
++++ b/liveMedia/include/MPEG1or2DemuxedElementaryStream.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MPEG1or2Demux.hh"
+ #endif
+ 
+-class MPEG1or2DemuxedElementaryStream: public FramedSource {
++class LIVEMEDIA_API MPEG1or2DemuxedElementaryStream: public FramedSource {
+ public:
+   MPEG1or2Demux::SCR lastSeenSCR() const { return fLastSeenSCR; }
+ 
+diff --git a/liveMedia/include/MPEG1or2DemuxedServerMediaSubsession.hh b/liveMedia/include/MPEG1or2DemuxedServerMediaSubsession.hh
+index fd853b9..5787b5d 100644
+--- a/liveMedia/include/MPEG1or2DemuxedServerMediaSubsession.hh
++++ b/liveMedia/include/MPEG1or2DemuxedServerMediaSubsession.hh
+@@ -29,7 +29,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MPEG1or2FileServerDemux.hh"
+ #endif
+ 
+-class MPEG1or2DemuxedServerMediaSubsession: public OnDemandServerMediaSubsession{
++class LIVEMEDIA_API MPEG1or2DemuxedServerMediaSubsession: public OnDemandServerMediaSubsession{
+ public:
+   static MPEG1or2DemuxedServerMediaSubsession*
+   createNew(MPEG1or2FileServerDemux& demux, u_int8_t streamIdTag,
+diff --git a/liveMedia/include/MPEG1or2FileServerDemux.hh b/liveMedia/include/MPEG1or2FileServerDemux.hh
+index 120880c..b14a225 100644
+--- a/liveMedia/include/MPEG1or2FileServerDemux.hh
++++ b/liveMedia/include/MPEG1or2FileServerDemux.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MPEG1or2DemuxedElementaryStream.hh"
+ #endif
+ 
+-class MPEG1or2FileServerDemux: public Medium {
++class LIVEMEDIA_API MPEG1or2FileServerDemux: public Medium {
+ public:
+   static MPEG1or2FileServerDemux*
+   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
+diff --git a/liveMedia/include/MPEG1or2VideoFileServerMediaSubsession.hh b/liveMedia/include/MPEG1or2VideoFileServerMediaSubsession.hh
+index 31505b0..86524e8 100644
+--- a/liveMedia/include/MPEG1or2VideoFileServerMediaSubsession.hh
++++ b/liveMedia/include/MPEG1or2VideoFileServerMediaSubsession.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileServerMediaSubsession.hh"
+ #endif
+ 
+-class MPEG1or2VideoFileServerMediaSubsession: public FileServerMediaSubsession{
++class LIVEMEDIA_API MPEG1or2VideoFileServerMediaSubsession: public FileServerMediaSubsession{
+ public:
+   static MPEG1or2VideoFileServerMediaSubsession*
+   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource,
+diff --git a/liveMedia/include/MPEG1or2VideoRTPSink.hh b/liveMedia/include/MPEG1or2VideoRTPSink.hh
+index 271ed93..2aefc25 100644
+--- a/liveMedia/include/MPEG1or2VideoRTPSink.hh
++++ b/liveMedia/include/MPEG1or2VideoRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "VideoRTPSink.hh"
+ #endif
+ 
+-class MPEG1or2VideoRTPSink: public VideoRTPSink {
++class LIVEMEDIA_API MPEG1or2VideoRTPSink: public VideoRTPSink {
+ public:
+   static MPEG1or2VideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs);
+ 
+diff --git a/liveMedia/include/MPEG1or2VideoRTPSource.hh b/liveMedia/include/MPEG1or2VideoRTPSource.hh
+index 6964daa..ea898a2 100644
+--- a/liveMedia/include/MPEG1or2VideoRTPSource.hh
++++ b/liveMedia/include/MPEG1or2VideoRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class MPEG1or2VideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API MPEG1or2VideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static MPEG1or2VideoRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/MPEG1or2VideoStreamDiscreteFramer.hh b/liveMedia/include/MPEG1or2VideoStreamDiscreteFramer.hh
+index 43f3bc7..fced6c4 100644
+--- a/liveMedia/include/MPEG1or2VideoStreamDiscreteFramer.hh
++++ b/liveMedia/include/MPEG1or2VideoStreamDiscreteFramer.hh
+@@ -30,7 +30,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 
+ #define VSH_MAX_SIZE 1000
+ 
+-class MPEG1or2VideoStreamDiscreteFramer: public MPEG1or2VideoStreamFramer {
++class LIVEMEDIA_API MPEG1or2VideoStreamDiscreteFramer: public MPEG1or2VideoStreamFramer {
+ public:
+   static MPEG1or2VideoStreamDiscreteFramer*
+   createNew(UsageEnvironment& env, FramedSource* inputSource,
+diff --git a/liveMedia/include/MPEG1or2VideoStreamFramer.hh b/liveMedia/include/MPEG1or2VideoStreamFramer.hh
+index e4c62d5..d58caf8 100644
+--- a/liveMedia/include/MPEG1or2VideoStreamFramer.hh
++++ b/liveMedia/include/MPEG1or2VideoStreamFramer.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MPEGVideoStreamFramer.hh"
+ #endif
+ 
+-class MPEG1or2VideoStreamFramer: public MPEGVideoStreamFramer {
++class LIVEMEDIA_API MPEG1or2VideoStreamFramer: public MPEGVideoStreamFramer {
+ public:
+   static MPEG1or2VideoStreamFramer*
+       createNew(UsageEnvironment& env, FramedSource* inputSource,
+diff --git a/liveMedia/include/MPEG2IndexFromTransportStream.hh b/liveMedia/include/MPEG2IndexFromTransportStream.hh
+index 3ea0ba1..6ceac1c 100644
+--- a/liveMedia/include/MPEG2IndexFromTransportStream.hh
++++ b/liveMedia/include/MPEG2IndexFromTransportStream.hh
+@@ -33,9 +33,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #define MAX_PES_PACKET_SIZE 65536
+ #endif
+ 
+-class IndexRecord; // forward
++class LIVEMEDIA_API IndexRecord; // forward
+ 
+-class MPEG2IFrameIndexFromTransportStream: public FramedFilter {
++class LIVEMEDIA_API MPEG2IFrameIndexFromTransportStream: public FramedFilter {
+ public:
+   static MPEG2IFrameIndexFromTransportStream*
+   createNew(UsageEnvironment& env, FramedSource* inputSource);
+diff --git a/liveMedia/include/MPEG2TransportFileServerMediaSubsession.hh b/liveMedia/include/MPEG2TransportFileServerMediaSubsession.hh
+index a68c1a6..ea263c4 100644
+--- a/liveMedia/include/MPEG2TransportFileServerMediaSubsession.hh
++++ b/liveMedia/include/MPEG2TransportFileServerMediaSubsession.hh
+@@ -38,9 +38,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MPEG2TransportStreamFromESSource.hh"
+ #endif
+ 
+-class ClientTrickPlayState; // forward
++class LIVEMEDIA_API ClientTrickPlayState; // forward
+ 
+-class MPEG2TransportFileServerMediaSubsession: public FileServerMediaSubsession {
++class LIVEMEDIA_API MPEG2TransportFileServerMediaSubsession: public FileServerMediaSubsession {
+ public:
+   static MPEG2TransportFileServerMediaSubsession*
+   createNew(UsageEnvironment& env,
+@@ -99,7 +99,7 @@ private:
+ // It is used only within the implementation of "MPEG2TransportFileServerMediaSubsession", but is included here,
+ // in case subclasses of "MPEG2TransportFileServerMediaSubsession" want to use it.
+ 
+-class ClientTrickPlayState {
++class LIVEMEDIA_API ClientTrickPlayState {
+ public:
+   ClientTrickPlayState(MPEG2TransportStreamIndexFile* indexFile);
+ 
+diff --git a/liveMedia/include/MPEG2TransportStreamAccumulator.hh b/liveMedia/include/MPEG2TransportStreamAccumulator.hh
+index 5200f20..42f5769 100644
+--- a/liveMedia/include/MPEG2TransportStreamAccumulator.hh
++++ b/liveMedia/include/MPEG2TransportStreamAccumulator.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedFilter.hh"
+ #endif
+ 
+-class MPEG2TransportStreamAccumulator: public FramedFilter {
++class LIVEMEDIA_API MPEG2TransportStreamAccumulator: public FramedFilter {
+ public:
+   static MPEG2TransportStreamAccumulator* createNew(UsageEnvironment& env,
+ 						    FramedSource* inputSource,
+diff --git a/liveMedia/include/MPEG2TransportStreamDemux.hh b/liveMedia/include/MPEG2TransportStreamDemux.hh
+index 11cc570..c69ec98 100644
+--- a/liveMedia/include/MPEG2TransportStreamDemux.hh
++++ b/liveMedia/include/MPEG2TransportStreamDemux.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedSource.hh"
+ #endif
+ 
+-class MPEG2TransportStreamDemux: public Medium {
++class LIVEMEDIA_API MPEG2TransportStreamDemux: public Medium {
+ public:
+   static MPEG2TransportStreamDemux* createNew(UsageEnvironment& env,
+ 					      FramedSource* inputSource,
+diff --git a/liveMedia/include/MPEG2TransportStreamFramer.hh b/liveMedia/include/MPEG2TransportStreamFramer.hh
+index 7b953c9..7096923 100644
+--- a/liveMedia/include/MPEG2TransportStreamFramer.hh
++++ b/liveMedia/include/MPEG2TransportStreamFramer.hh
+@@ -31,7 +31,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "HashTable.hh"
+ #endif
+ 
+-class MPEG2TransportStreamFramer: public FramedFilter {
++class LIVEMEDIA_API MPEG2TransportStreamFramer: public FramedFilter {
+ public:
+   static MPEG2TransportStreamFramer*
+   createNew(UsageEnvironment& env, FramedSource* inputSource);
+diff --git a/liveMedia/include/MPEG2TransportStreamFromESSource.hh b/liveMedia/include/MPEG2TransportStreamFromESSource.hh
+index ffb9486..d787a3f 100644
+--- a/liveMedia/include/MPEG2TransportStreamFromESSource.hh
++++ b/liveMedia/include/MPEG2TransportStreamFromESSource.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MPEG2TransportStreamMultiplexor.hh"
+ #endif
+ 
+-class MPEG2TransportStreamFromESSource: public MPEG2TransportStreamMultiplexor {
++class LIVEMEDIA_API MPEG2TransportStreamFromESSource: public MPEG2TransportStreamMultiplexor {
+ public:
+   static MPEG2TransportStreamFromESSource* createNew(UsageEnvironment& env);
+ 
+diff --git a/liveMedia/include/MPEG2TransportStreamFromPESSource.hh b/liveMedia/include/MPEG2TransportStreamFromPESSource.hh
+index 87044ed..cfe59c8 100644
+--- a/liveMedia/include/MPEG2TransportStreamFromPESSource.hh
++++ b/liveMedia/include/MPEG2TransportStreamFromPESSource.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MPEG1or2DemuxedElementaryStream.hh"
+ #endif
+ 
+-class MPEG2TransportStreamFromPESSource: public MPEG2TransportStreamMultiplexor {
++class LIVEMEDIA_API MPEG2TransportStreamFromPESSource: public MPEG2TransportStreamMultiplexor {
+ public:
+   static MPEG2TransportStreamFromPESSource*
+   createNew(UsageEnvironment& env, MPEG1or2DemuxedElementaryStream* inputSource);
+diff --git a/liveMedia/include/MPEG2TransportStreamIndexFile.hh b/liveMedia/include/MPEG2TransportStreamIndexFile.hh
+index b21d108..be0e172 100644
+--- a/liveMedia/include/MPEG2TransportStreamIndexFile.hh
++++ b/liveMedia/include/MPEG2TransportStreamIndexFile.hh
+@@ -30,7 +30,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 
+ #define INDEX_RECORD_SIZE 11
+ 
+-class MPEG2TransportStreamIndexFile: public Medium {
++class LIVEMEDIA_API MPEG2TransportStreamIndexFile: public Medium {
+ public:
+   static MPEG2TransportStreamIndexFile* createNew(UsageEnvironment& env,
+ 						  char const* indexFileName);
+diff --git a/liveMedia/include/MPEG2TransportStreamMultiplexor.hh b/liveMedia/include/MPEG2TransportStreamMultiplexor.hh
+index e623ecc..149e49d 100644
+--- a/liveMedia/include/MPEG2TransportStreamMultiplexor.hh
++++ b/liveMedia/include/MPEG2TransportStreamMultiplexor.hh
+@@ -31,7 +31,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 
+ #define PID_TABLE_SIZE 0x2000 // 2^13
+ 
+-class MPEG2TransportStreamMultiplexor: public FramedSource {
++class LIVEMEDIA_API MPEG2TransportStreamMultiplexor: public FramedSource {
+ public:
+   typedef void (onEndOfSegmentFunc)(void* clientData, double segmentDuration);
+   void setTimedSegmentation(unsigned segmentationDuration,
+diff --git a/liveMedia/include/MPEG2TransportStreamTrickModeFilter.hh b/liveMedia/include/MPEG2TransportStreamTrickModeFilter.hh
+index b8f5c3a..4f386b2 100644
+--- a/liveMedia/include/MPEG2TransportStreamTrickModeFilter.hh
++++ b/liveMedia/include/MPEG2TransportStreamTrickModeFilter.hh
+@@ -35,7 +35,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #define TRANSPORT_PACKET_SIZE 188
+ #endif
+ 
+-class MPEG2TransportStreamTrickModeFilter: public FramedFilter {
++class LIVEMEDIA_API MPEG2TransportStreamTrickModeFilter: public FramedFilter {
+ public:
+   static MPEG2TransportStreamTrickModeFilter*
+   createNew(UsageEnvironment& env, FramedSource* inputSource,
+diff --git a/liveMedia/include/MPEG2TransportUDPServerMediaSubsession.hh b/liveMedia/include/MPEG2TransportUDPServerMediaSubsession.hh
+index d134201..7199d91 100644
+--- a/liveMedia/include/MPEG2TransportUDPServerMediaSubsession.hh
++++ b/liveMedia/include/MPEG2TransportUDPServerMediaSubsession.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "OnDemandServerMediaSubsession.hh"
+ #endif
+ 
+-class MPEG2TransportUDPServerMediaSubsession: public OnDemandServerMediaSubsession {
++class LIVEMEDIA_API MPEG2TransportUDPServerMediaSubsession: public OnDemandServerMediaSubsession {
+ public:
+   static MPEG2TransportUDPServerMediaSubsession*
+   createNew(UsageEnvironment& env,
+diff --git a/liveMedia/include/MPEG4ESVideoRTPSink.hh b/liveMedia/include/MPEG4ESVideoRTPSink.hh
+index 382476e..3b281c8 100644
+--- a/liveMedia/include/MPEG4ESVideoRTPSink.hh
++++ b/liveMedia/include/MPEG4ESVideoRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "VideoRTPSink.hh"
+ #endif
+ 
+-class MPEG4ESVideoRTPSink: public VideoRTPSink {
++class LIVEMEDIA_API MPEG4ESVideoRTPSink: public VideoRTPSink {
+ public:
+   static MPEG4ESVideoRTPSink* createNew(UsageEnvironment& env,
+ 					Groupsock* RTPgs, unsigned char rtpPayloadFormat,
+diff --git a/liveMedia/include/MPEG4ESVideoRTPSource.hh b/liveMedia/include/MPEG4ESVideoRTPSource.hh
+index 1003cb0..16ecf69 100644
+--- a/liveMedia/include/MPEG4ESVideoRTPSource.hh
++++ b/liveMedia/include/MPEG4ESVideoRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class MPEG4ESVideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API MPEG4ESVideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static MPEG4ESVideoRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/MPEG4GenericRTPSink.hh b/liveMedia/include/MPEG4GenericRTPSink.hh
+index 447c7d6..a31769c 100644
+--- a/liveMedia/include/MPEG4GenericRTPSink.hh
++++ b/liveMedia/include/MPEG4GenericRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSink.hh"
+ #endif
+ 
+-class MPEG4GenericRTPSink: public MultiFramedRTPSink {
++class LIVEMEDIA_API MPEG4GenericRTPSink: public MultiFramedRTPSink {
+ public:
+   static MPEG4GenericRTPSink*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/MPEG4GenericRTPSource.hh b/liveMedia/include/MPEG4GenericRTPSource.hh
+index b32d076..4c18e93 100644
+--- a/liveMedia/include/MPEG4GenericRTPSource.hh
++++ b/liveMedia/include/MPEG4GenericRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class MPEG4GenericRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API MPEG4GenericRTPSource: public MultiFramedRTPSource {
+ public:
+   static MPEG4GenericRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/MPEG4LATMAudioRTPSink.hh b/liveMedia/include/MPEG4LATMAudioRTPSink.hh
+index ddaea8e..cf060b1 100644
+--- a/liveMedia/include/MPEG4LATMAudioRTPSink.hh
++++ b/liveMedia/include/MPEG4LATMAudioRTPSink.hh
+@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "AudioRTPSink.hh"
+ #endif
+ 
+-class MPEG4LATMAudioRTPSink: public AudioRTPSink {
++class LIVEMEDIA_API MPEG4LATMAudioRTPSink: public AudioRTPSink {
+ public:
+   static MPEG4LATMAudioRTPSink* createNew(UsageEnvironment& env,
+ 					  Groupsock* RTPgs,
+diff --git a/liveMedia/include/MPEG4LATMAudioRTPSource.hh b/liveMedia/include/MPEG4LATMAudioRTPSource.hh
+index 8674fd8..e760aeb 100644
+--- a/liveMedia/include/MPEG4LATMAudioRTPSource.hh
++++ b/liveMedia/include/MPEG4LATMAudioRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class MPEG4LATMAudioRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API MPEG4LATMAudioRTPSource: public MultiFramedRTPSource {
+ public:
+   static MPEG4LATMAudioRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/MPEG4VideoFileServerMediaSubsession.hh b/liveMedia/include/MPEG4VideoFileServerMediaSubsession.hh
+index eaa9dd2..d03383c 100644
+--- a/liveMedia/include/MPEG4VideoFileServerMediaSubsession.hh
++++ b/liveMedia/include/MPEG4VideoFileServerMediaSubsession.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileServerMediaSubsession.hh"
+ #endif
+ 
+-class MPEG4VideoFileServerMediaSubsession: public FileServerMediaSubsession{
++class LIVEMEDIA_API MPEG4VideoFileServerMediaSubsession: public FileServerMediaSubsession{
+ public:
+   static MPEG4VideoFileServerMediaSubsession*
+   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource);
+diff --git a/liveMedia/include/MPEG4VideoStreamDiscreteFramer.hh b/liveMedia/include/MPEG4VideoStreamDiscreteFramer.hh
+index 018f431..38e8240 100644
+--- a/liveMedia/include/MPEG4VideoStreamDiscreteFramer.hh
++++ b/liveMedia/include/MPEG4VideoStreamDiscreteFramer.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MPEG4VideoStreamFramer.hh"
+ #endif
+ 
+-class MPEG4VideoStreamDiscreteFramer: public MPEG4VideoStreamFramer {
++class LIVEMEDIA_API MPEG4VideoStreamDiscreteFramer: public MPEG4VideoStreamFramer {
+ public:
+   static MPEG4VideoStreamDiscreteFramer*
+   createNew(UsageEnvironment& env, FramedSource* inputSource, Boolean leavePresentationTimesUnmodified = False);
+diff --git a/liveMedia/include/MPEG4VideoStreamFramer.hh b/liveMedia/include/MPEG4VideoStreamFramer.hh
+index bc581a9..739717a 100644
+--- a/liveMedia/include/MPEG4VideoStreamFramer.hh
++++ b/liveMedia/include/MPEG4VideoStreamFramer.hh
+@@ -30,7 +30,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MPEGVideoStreamFramer.hh"
+ #endif
+ 
+-class MPEG4VideoStreamFramer: public MPEGVideoStreamFramer {
++class LIVEMEDIA_API MPEG4VideoStreamFramer: public MPEGVideoStreamFramer {
+ public:
+   static MPEG4VideoStreamFramer*
+   createNew(UsageEnvironment& env, FramedSource* inputSource);
+diff --git a/liveMedia/include/MPEGVideoStreamFramer.hh b/liveMedia/include/MPEGVideoStreamFramer.hh
+index 4a76700..31a72ad 100644
+--- a/liveMedia/include/MPEGVideoStreamFramer.hh
++++ b/liveMedia/include/MPEGVideoStreamFramer.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedFilter.hh"
+ #endif
+ 
+-class TimeCode {
++class LIVEMEDIA_API TimeCode {
+ public:
+   TimeCode();
+   virtual ~TimeCode();
+@@ -35,7 +35,7 @@ public:
+   unsigned days, hours, minutes, seconds, pictures;
+ };
+ 
+-class MPEGVideoStreamFramer: public FramedFilter {
++class LIVEMEDIA_API MPEGVideoStreamFramer: public FramedFilter {
+ public:
+   Boolean& pictureEndMarker() { return fPictureEndMarker; }
+       // a hack for implementing the RTP 'M' bit
+diff --git a/liveMedia/include/MatroskaFile.hh b/liveMedia/include/MatroskaFile.hh
+index 73f0897..f07f3dd 100644
+--- a/liveMedia/include/MatroskaFile.hh
++++ b/liveMedia/include/MatroskaFile.hh
+@@ -31,12 +31,12 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "HashTable.hh"
+ #endif
+ 
+-class MatroskaTrack; // forward
+-class MatroskaDemux; // forward
++class LIVEMEDIA_API MatroskaTrack; // forward
++class LIVEMEDIA_API MatroskaDemux; // forward
+ 
+ typedef void MatroskaDemuxOnDeletionFunc(void* objectToNotify, MatroskaDemux* demuxBeingDeleted);
+ 
+-class MatroskaFile: public Medium {
++class LIVEMEDIA_API MatroskaFile: public Medium {
+ public:
+   typedef void (onCreationFunc)(MatroskaFile* newFile, void* clientData);
+   static void createNew(UsageEnvironment& env, char const* fileName, onCreationFunc* onCreation, void* onCreationClientData,
+@@ -138,7 +138,7 @@ private:
+ #define MATROSKA_TRACK_TYPE_SUBTITLE 0x04
+ #define MATROSKA_TRACK_TYPE_OTHER 0x08
+ 
+-class MatroskaTrack {
++class LIVEMEDIA_API MatroskaTrack {
+ public:
+   MatroskaTrack();
+   virtual ~MatroskaTrack();
+@@ -169,7 +169,7 @@ public:
+   Boolean haveSubframes() const { return subframeSizeSize > 0; }
+ };
+ 
+-class MatroskaDemux: public Medium {
++class LIVEMEDIA_API MatroskaDemux: public Medium {
+ public:
+   FramedSource* newDemuxedTrack();
+   FramedSource* newDemuxedTrack(unsigned& resultTrackNumber);
+diff --git a/liveMedia/include/MatroskaFileServerDemux.hh b/liveMedia/include/MatroskaFileServerDemux.hh
+index 73dcbba..2280ce8 100644
+--- a/liveMedia/include/MatroskaFileServerDemux.hh
++++ b/liveMedia/include/MatroskaFileServerDemux.hh
+@@ -29,7 +29,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MatroskaFile.hh"
+ #endif
+ 
+-class MatroskaFileServerDemux: public Medium {
++class LIVEMEDIA_API MatroskaFileServerDemux: public Medium {
+ public:
+   typedef void (onCreationFunc)(MatroskaFileServerDemux* newDemux, void* clientData);
+   static void createNew(UsageEnvironment& env, char const* fileName,
+diff --git a/liveMedia/include/Media.hh b/liveMedia/include/Media.hh
+index 0f5c590..fd9861b 100644
+--- a/liveMedia/include/Media.hh
++++ b/liveMedia/include/Media.hh
+@@ -39,6 +39,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #endif
+ #include <stdio.h>
+ 
++#include "export.h"
++
+ // The following makes the Borland compiler happy:
+ #ifdef __BORLANDC__
+ #define _strnicmp strnicmp
+@@ -47,7 +49,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 
+ #define mediumNameMaxLen 30
+ 
+-class Medium {
++class LIVEMEDIA_API Medium {
+ public:
+   static Boolean lookupByName(UsageEnvironment& env,
+ 			      char const* mediumName,
+@@ -88,7 +90,7 @@ private:
+ // A data structure for looking up a Medium by its string name.
+ // (It is used only to implement "Medium", but we make it visible here, in case developers want to use it to iterate over
+ //  the whole set of "Medium" objects that we've created.)
+-class MediaLookupTable {
++class LIVEMEDIA_API MediaLookupTable {
+ public:
+   static MediaLookupTable* ourMedia(UsageEnvironment& env);
+   HashTable const& getTable() { return *fTable; }
+@@ -116,7 +118,7 @@ private:
+ 
+ 
+ // The structure pointed to by the "liveMediaPriv" UsageEnvironment field:
+-class _Tables {
++class LIVEMEDIA_API _Tables {
+ public:
+   static _Tables* getOurTables(UsageEnvironment& env, Boolean createIfNotPresent = True);
+       // returns a pointer to a "_Tables" structure (creating it if necessary)
+diff --git a/liveMedia/include/MediaSession.hh b/liveMedia/include/MediaSession.hh
+index 96833c8..b029397 100644
+--- a/liveMedia/include/MediaSession.hh
++++ b/liveMedia/include/MediaSession.hh
+@@ -58,9 +58,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "SRTPCryptographicContext.hh"
+ #endif
+ 
+-class MediaSubsession; // forward
++class LIVEMEDIA_API MediaSubsession; // forward
+ 
+-class MediaSession: public Medium {
++class LIVEMEDIA_API MediaSession: public Medium {
+ public:
+   static MediaSession* createNew(UsageEnvironment& env,
+ 				 char const* sdpDescription);
+@@ -154,7 +154,7 @@ protected:
+ };
+ 
+ 
+-class MediaSubsessionIterator {
++class LIVEMEDIA_API MediaSubsessionIterator {
+ public:
+   MediaSubsessionIterator(MediaSession const& session);
+   virtual ~MediaSubsessionIterator();
+@@ -168,7 +168,7 @@ private:
+ };
+ 
+ 
+-class MediaSubsession {
++class LIVEMEDIA_API MediaSubsession {
+ public:
+   MediaSession& parentSession() { return fParent; }
+   MediaSession const& parentSession() const { return fParent; }
+diff --git a/liveMedia/include/MediaSink.hh b/liveMedia/include/MediaSink.hh
+index a172bb0..a889b89 100644
+--- a/liveMedia/include/MediaSink.hh
++++ b/liveMedia/include/MediaSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedSource.hh"
+ #endif
+ 
+-class MediaSink: public Medium {
++class LIVEMEDIA_API MediaSink: public Medium {
+ public:
+   static Boolean lookupByName(UsageEnvironment& env, char const* sinkName,
+ 			      MediaSink*& resultSink);
+@@ -68,7 +68,7 @@ private:
+ };
+ 
+ // A data structure that a sink may use for an output packet:
+-class OutPacketBuffer {
++class LIVEMEDIA_API OutPacketBuffer {
+ public:
+   OutPacketBuffer(unsigned preferredPacketSize, unsigned maxPacketSize,
+ 		  unsigned maxBufferSize = 0);
+diff --git a/liveMedia/include/MediaSource.hh b/liveMedia/include/MediaSource.hh
+index ffbf260..be723f4 100644
+--- a/liveMedia/include/MediaSource.hh
++++ b/liveMedia/include/MediaSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "Media.hh"
+ #endif
+ 
+-class MediaSource: public Medium {
++class LIVEMEDIA_API MediaSource: public Medium {
+ public:
+   static Boolean lookupByName(UsageEnvironment& env, char const* sourceName,
+ 			      MediaSource*& resultSource);
+diff --git a/liveMedia/include/MediaTranscodingTable.hh b/liveMedia/include/MediaTranscodingTable.hh
+index fa56943..25665ad 100644
+--- a/liveMedia/include/MediaTranscodingTable.hh
++++ b/liveMedia/include/MediaTranscodingTable.hh
+@@ -31,7 +31,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MediaSession.hh"
+ #endif
+ 
+-class MediaTranscodingTable: public Medium {
++class LIVEMEDIA_API MediaTranscodingTable: public Medium {
+ public:
+   virtual FramedFilter*
+   lookupTranscoder(MediaSubsession& /*inputCodecDescription*/, // in
+diff --git a/liveMedia/include/MultiFramedRTPSink.hh b/liveMedia/include/MultiFramedRTPSink.hh
+index d86cc62..b964d00 100644
+--- a/liveMedia/include/MultiFramedRTPSink.hh
++++ b/liveMedia/include/MultiFramedRTPSink.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "RTPSink.hh"
+ #endif
+ 
+-class MultiFramedRTPSink: public RTPSink {
++class LIVEMEDIA_API MultiFramedRTPSink: public RTPSink {
+ public:
+   void setPacketSizes(unsigned preferredPacketSize, unsigned maxPacketSize);
+ 
+diff --git a/liveMedia/include/MultiFramedRTPSource.hh b/liveMedia/include/MultiFramedRTPSource.hh
+index a8bfcb6..2795599 100644
+--- a/liveMedia/include/MultiFramedRTPSource.hh
++++ b/liveMedia/include/MultiFramedRTPSource.hh
+@@ -26,10 +26,10 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "RTPSource.hh"
+ #endif
+ 
+-class BufferedPacket; // forward
+-class BufferedPacketFactory; // forward
++class LIVEMEDIA_API BufferedPacket; // forward
++class LIVEMEDIA_API BufferedPacketFactory; // forward
+ 
+-class MultiFramedRTPSource: public RTPSource {
++class LIVEMEDIA_API MultiFramedRTPSource: public RTPSource {
+ protected:
+   MultiFramedRTPSource(UsageEnvironment& env, Groupsock* RTPgs,
+ 		       unsigned char rtpPayloadFormat,
+@@ -83,7 +83,7 @@ private:
+ // Note that this can be subclassed - if desired - to redefine
+ // "nextEnclosedFrameParameters()".
+ 
+-class BufferedPacket {
++class LIVEMEDIA_API BufferedPacket {
+ public:
+   BufferedPacket();
+   virtual ~BufferedPacket();
+@@ -148,7 +148,7 @@ private:
+ // If you want to subclass "BufferedPacket", then you'll also
+ // want to subclass this, to redefine createNewPacket()
+ 
+-class BufferedPacketFactory {
++class LIVEMEDIA_API BufferedPacketFactory {
+ public:
+   BufferedPacketFactory();
+   virtual ~BufferedPacketFactory();
+diff --git a/liveMedia/include/OggFile.hh b/liveMedia/include/OggFile.hh
+index 11d50a7..602ca99 100644
+--- a/liveMedia/include/OggFile.hh
++++ b/liveMedia/include/OggFile.hh
+@@ -28,12 +28,12 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "HashTable.hh"
+ #endif
+ 
+-class OggTrack; // forward
+-class OggDemux; // forward
++class LIVEMEDIA_API OggTrack; // forward
++class LIVEMEDIA_API OggDemux; // forward
+ 
+ typedef void OggDemuxOnDeletionFunc(void* objectToNotify, OggDemux* demuxBeingDeleted);
+ 
+-class OggFile: public Medium {
++class LIVEMEDIA_API OggFile: public Medium {
+ public:
+   typedef void (onCreationFunc)(OggFile* newFile, void* clientData);
+   static void createNew(UsageEnvironment& env, char const* fileName,
+@@ -89,7 +89,7 @@ private:
+   class OggFileParser* fParserForInitialization;
+ };
+ 
+-class OggTrack {
++class LIVEMEDIA_API OggTrack {
+ public:
+   OggTrack();
+   virtual ~OggTrack();
+@@ -128,7 +128,7 @@ public:
+     }
+ };
+ 
+-class OggTrackTableIterator {
++class LIVEMEDIA_API OggTrackTableIterator {
+ public:
+   OggTrackTableIterator(class OggTrackTable& ourTable);
+   virtual ~OggTrackTableIterator();
+@@ -139,7 +139,7 @@ private:
+   HashTable::Iterator* fIter;
+ };
+ 
+-class OggDemux: public Medium {
++class LIVEMEDIA_API OggDemux: public Medium {
+ public:
+   FramedSource* newDemuxedTrack(u_int32_t& resultTrackNumber);
+     // Returns a new stream ("FramedSource" subclass) that represents the next media track
+diff --git a/liveMedia/include/OggFileServerDemux.hh b/liveMedia/include/OggFileServerDemux.hh
+index fa4913e..fa1069d 100644
+--- a/liveMedia/include/OggFileServerDemux.hh
++++ b/liveMedia/include/OggFileServerDemux.hh
+@@ -29,7 +29,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "OggFile.hh"
+ #endif
+ 
+-class OggFileServerDemux: public Medium {
++class LIVEMEDIA_API OggFileServerDemux: public Medium {
+ public:
+   typedef void (onCreationFunc)(OggFileServerDemux* newDemux, void* clientData);
+   static void createNew(UsageEnvironment& env, char const* fileName,
+diff --git a/liveMedia/include/OggFileSink.hh b/liveMedia/include/OggFileSink.hh
+index 471822a..ad41ea2 100644
+--- a/liveMedia/include/OggFileSink.hh
++++ b/liveMedia/include/OggFileSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileSink.hh"
+ #endif
+ 
+-class OggFileSink: public FileSink {
++class LIVEMEDIA_API OggFileSink: public FileSink {
+ public:
+   static OggFileSink* createNew(UsageEnvironment& env, char const* fileName,
+ 				unsigned samplingFrequency = 0, // used for granule_position
+diff --git a/liveMedia/include/OnDemandServerMediaSubsession.hh b/liveMedia/include/OnDemandServerMediaSubsession.hh
+index 6c925d9..70033c4 100644
+--- a/liveMedia/include/OnDemandServerMediaSubsession.hh
++++ b/liveMedia/include/OnDemandServerMediaSubsession.hh
+@@ -35,7 +35,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "RTCP.hh"
+ #endif
+ 
+-class OnDemandServerMediaSubsession: public ServerMediaSubsession {
++class LIVEMEDIA_API OnDemandServerMediaSubsession: public ServerMediaSubsession {
+ protected: // we're a virtual base class
+   OnDemandServerMediaSubsession(UsageEnvironment& env, Boolean reuseFirstSource,
+ 				portNumBits initialPortNum = 6970,
+@@ -151,7 +151,7 @@ private:
+ // "OnDemandServerMediaSubsession", but we expose the definition here, in case subclasses of "OnDemandServerMediaSubsession"
+ // want to access it.
+ 
+-class Destinations {
++class LIVEMEDIA_API Destinations {
+ public:
+   Destinations(struct sockaddr_storage const& destAddr,
+                Port const& rtpDestPort,
+@@ -175,7 +175,7 @@ public:
+   TLSState* tlsState;
+ };
+ 
+-class StreamState {
++class LIVEMEDIA_API StreamState {
+ public:
+   StreamState(OnDemandServerMediaSubsession& master,
+               Port const& serverRTPPort, Port const& serverRTCPPort,
+diff --git a/liveMedia/include/OutputFile.hh b/liveMedia/include/OutputFile.hh
+index 83f958e..34a85af 100644
+--- a/liveMedia/include/OutputFile.hh
++++ b/liveMedia/include/OutputFile.hh
+@@ -24,8 +24,8 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include <UsageEnvironment.hh>
+ #include <stdio.h>
+ 
+-FILE* OpenOutputFile(UsageEnvironment& env, char const* fileName);
++LIVEMEDIA_API FILE* OpenOutputFile(UsageEnvironment& env, char const* fileName);
+ 
+-void CloseOutputFile(FILE* fid);
++LIVEMEDIA_API void CloseOutputFile(FILE* fid);
+ 
+ #endif
+diff --git a/liveMedia/include/PassiveServerMediaSubsession.hh b/liveMedia/include/PassiveServerMediaSubsession.hh
+index 98ea24c..60fc34a 100644
+--- a/liveMedia/include/PassiveServerMediaSubsession.hh
++++ b/liveMedia/include/PassiveServerMediaSubsession.hh
+@@ -33,7 +33,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "RTCP.hh"
+ #endif
+ 
+-class PassiveServerMediaSubsession: public ServerMediaSubsession {
++class LIVEMEDIA_API PassiveServerMediaSubsession: public ServerMediaSubsession {
+ public:
+   static PassiveServerMediaSubsession* createNew(RTPSink& rtpSink,
+ 						 RTCPInstance* rtcpInstance = NULL);
+diff --git a/liveMedia/include/ProxyServerMediaSession.hh b/liveMedia/include/ProxyServerMediaSession.hh
+index 1c41ee5..5f41954 100644
+--- a/liveMedia/include/ProxyServerMediaSession.hh
++++ b/liveMedia/include/ProxyServerMediaSession.hh
+@@ -39,7 +39,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ // It is used only within the implementation of "ProxyServerMediaSession", but is defined here, in case developers wish to
+ // subclass it.
+ 
+-class ProxyRTSPClient: public RTSPClient {
++class LIVEMEDIA_API ProxyRTSPClient: public RTSPClient {
+ public:
+   ProxyRTSPClient(class ProxyServerMediaSession& ourServerMediaSession, char const* rtspURL,
+                   char const* username, char const* password,
+@@ -98,7 +98,7 @@ defaultCreateNewProxyRTSPClientFunc(ProxyServerMediaSession& ourServerMediaSessi
+ 				    portNumBits tunnelOverHTTPPortNum, int verbosityLevel,
+ 				    int socketNumToServer);
+ 
+-class ProxyServerMediaSession: public ServerMediaSession {
++class LIVEMEDIA_API ProxyServerMediaSession: public ServerMediaSession {
+ public:
+   static ProxyServerMediaSession* createNew(UsageEnvironment& env,
+ 					    GenericMediaServer* ourMediaServer, // Note: We can be used by just one server
+@@ -183,7 +183,7 @@ private:
+ // (For multi-subsession (i.e., audio+video) sessions, the outgoing streams' presentation times retain the same relative
+ //  separation as those of the incoming streams.)
+ 
+-class PresentationTimeSubsessionNormalizer: public FramedFilter {
++class LIVEMEDIA_API PresentationTimeSubsessionNormalizer: public FramedFilter {
+ public:
+   void setRTPSink(RTPSink* rtpSink) { fRTPSink = rtpSink; }
+ 
+@@ -214,7 +214,7 @@ private:
+   PresentationTimeSubsessionNormalizer* fNext;
+ };
+ 
+-class PresentationTimeSessionNormalizer: public Medium {
++class LIVEMEDIA_API PresentationTimeSessionNormalizer: public Medium {
+ public:
+   PresentationTimeSessionNormalizer(UsageEnvironment& env);
+   virtual ~PresentationTimeSessionNormalizer();
+diff --git a/liveMedia/include/QCELPAudioRTPSource.hh b/liveMedia/include/QCELPAudioRTPSource.hh
+index 2beef07..c30dc2a 100644
+--- a/liveMedia/include/QCELPAudioRTPSource.hh
++++ b/liveMedia/include/QCELPAudioRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "RTPSource.hh"
+ #endif
+ 
+-class QCELPAudioRTPSource {
++class LIVEMEDIA_API QCELPAudioRTPSource {
+ public:
+   static FramedSource* createNew(UsageEnvironment& env,
+ 				 Groupsock* RTPgs,
+diff --git a/liveMedia/include/QuickTimeFileSink.hh b/liveMedia/include/QuickTimeFileSink.hh
+index b351f39..f4231e6 100644
+--- a/liveMedia/include/QuickTimeFileSink.hh
++++ b/liveMedia/include/QuickTimeFileSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MediaSession.hh"
+ #endif
+ 
+-class QuickTimeFileSink: public Medium {
++class LIVEMEDIA_API QuickTimeFileSink: public Medium {
+ public:
+   static QuickTimeFileSink* createNew(UsageEnvironment& env,
+ 				      MediaSession& inputSession,
+diff --git a/liveMedia/include/QuickTimeGenericRTPSource.hh b/liveMedia/include/QuickTimeGenericRTPSource.hh
+index 0183104..ebb115e 100644
+--- a/liveMedia/include/QuickTimeGenericRTPSource.hh
++++ b/liveMedia/include/QuickTimeGenericRTPSource.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class QuickTimeGenericRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API QuickTimeGenericRTPSource: public MultiFramedRTPSource {
+ public:
+   static QuickTimeGenericRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/RTCP.hh b/liveMedia/include/RTCP.hh
+index 754e80e..7c1f7ac 100644
+--- a/liveMedia/include/RTCP.hh
++++ b/liveMedia/include/RTCP.hh
+@@ -31,7 +31,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "SRTPCryptographicContext.hh"
+ #endif
+ 
+-class SDESItem {
++class LIVEMEDIA_API SDESItem {
+ public:
+   SDESItem(unsigned char tag, unsigned char const* value);
+ 
+@@ -46,11 +46,11 @@ typedef void RTCPAppHandlerFunc(void* clientData,
+ 				u_int8_t subtype, u_int32_t nameBytes/*big-endian order*/,
+ 				u_int8_t* appDependentData, unsigned appDependentDataSize);
+ 
+-class RTCPMemberDatabase; // forward
++class LIVEMEDIA_API RTCPMemberDatabase; // forward
+ 
+ typedef void ByeWithReasonHandlerFunc(void* clientData, char const* reason);
+ 
+-class RTCPInstance: public Medium {
++class LIVEMEDIA_API RTCPInstance: public Medium {
+ public:
+   static RTCPInstance* createNew(UsageEnvironment& env, Groupsock* RTCPgs,
+ 				 unsigned totSessionBW, /* in kbps */
+diff --git a/liveMedia/include/RTPInterface.hh b/liveMedia/include/RTPInterface.hh
+index c1afc87..0de42ed 100644
+--- a/liveMedia/include/RTPInterface.hh
++++ b/liveMedia/include/RTPInterface.hh
+@@ -43,7 +43,7 @@ typedef void ServerRequestAlternativeByteHandler(void* instance, u_int8_t reques
+ // the same TCP connection.  A RTSP server implementation would supply a function like this - as a parameter to
+ // "ServerMediaSubsession::startStream()".
+ 
+-class RTPInterface {
++class LIVEMEDIA_API RTPInterface {
+ public:
+   RTPInterface(Medium* owner, Groupsock* gs);
+   virtual ~RTPInterface();
+diff --git a/liveMedia/include/RTPSink.hh b/liveMedia/include/RTPSink.hh
+index cb62182..76eb5e8 100644
+--- a/liveMedia/include/RTPSink.hh
++++ b/liveMedia/include/RTPSink.hh
+@@ -32,9 +32,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MIKEY.hh"
+ #endif
+ 
+-class RTPTransmissionStatsDB; // forward
++class LIVEMEDIA_API RTPTransmissionStatsDB; // forward
+ 
+-class RTPSink: public MediaSink {
++class LIVEMEDIA_API RTPSink: public MediaSink {
+ public:
+   static Boolean lookupByName(UsageEnvironment& env, char const* sinkName,
+ 			      RTPSink*& resultSink);
+@@ -138,9 +138,9 @@ private:
+ };
+ 
+ 
+-class RTPTransmissionStats; // forward
++class LIVEMEDIA_API RTPTransmissionStats; // forward
+ 
+-class RTPTransmissionStatsDB {
++class LIVEMEDIA_API RTPTransmissionStatsDB {
+ public:
+   unsigned numReceivers() const { return fNumReceivers; }
+ 
+@@ -181,7 +181,7 @@ private:
+   HashTable* fTable;
+ };
+ 
+-class RTPTransmissionStats {
++class LIVEMEDIA_API RTPTransmissionStats {
+ public:
+   u_int32_t SSRC() const {return fSSRC;}
+   struct sockaddr_storage const& lastFromAddress() const {return fLastFromAddress;}
+diff --git a/liveMedia/include/RTPSource.hh b/liveMedia/include/RTPSource.hh
+index 07cc708..72a0625 100644
+--- a/liveMedia/include/RTPSource.hh
++++ b/liveMedia/include/RTPSource.hh
+@@ -31,9 +31,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "SRTPCryptographicContext.hh"
+ #endif
+ 
+-class RTPReceptionStatsDB; // forward
++class LIVEMEDIA_API RTPReceptionStatsDB; // forward
+ 
+-class RTPSource: public FramedSource {
++class LIVEMEDIA_API RTPSource: public FramedSource {
+ public:
+   static Boolean lookupByName(UsageEnvironment& env, char const* sourceName,
+ 			      RTPSource*& resultSource);
+@@ -120,9 +120,9 @@ private:
+ };
+ 
+ 
+-class RTPReceptionStats; // forward
++class LIVEMEDIA_API RTPReceptionStats; // forward
+ 
+-class RTPReceptionStatsDB {
++class LIVEMEDIA_API RTPReceptionStatsDB {
+ public:
+   unsigned totNumPacketsReceived() const { return fTotNumPacketsReceived; }
+   unsigned numActiveSourcesSinceLastReset() const {
+@@ -181,7 +181,7 @@ private:
+   unsigned fTotNumPacketsReceived; // for all SSRCs
+ };
+ 
+-class RTPReceptionStats {
++class LIVEMEDIA_API RTPReceptionStats {
+ public:
+   u_int32_t SSRC() const { return fSSRC; }
+   unsigned numPacketsReceivedSinceLastReset() const {
+diff --git a/liveMedia/include/RTSPClient.hh b/liveMedia/include/RTSPClient.hh
+index c99dcac..6af113d 100644
+--- a/liveMedia/include/RTSPClient.hh
++++ b/liveMedia/include/RTSPClient.hh
+@@ -39,7 +39,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #endif
+ #endif
+ 
+-class RTSPClient: public Medium {
++class LIVEMEDIA_API RTSPClient: public Medium {
+ public:
+   static RTSPClient* createNew(UsageEnvironment& env, char const* rtspURL,
+ 			       int verbosityLevel = 0,
+@@ -370,7 +370,7 @@ private:
+ 
+ typedef void onRTSPClientCreationFunc(RTSPClient* newRTSPClient, Boolean requestStreamingOverTCP);
+ 
+-class HandlerServerForREGISTERCommand: public RTSPServer {
++class LIVEMEDIA_API HandlerServerForREGISTERCommand: public RTSPServer {
+ public:
+   static HandlerServerForREGISTERCommand* createNew(UsageEnvironment& env, onRTSPClientCreationFunc* creationFunc,
+ 						    Port ourPort = 0, UserAuthenticationDatabase* authDatabase = NULL,
+diff --git a/liveMedia/include/RTSPRegisterSender.hh b/liveMedia/include/RTSPRegisterSender.hh
+index c7cc4d2..33983ba 100644
+--- a/liveMedia/include/RTSPRegisterSender.hh
++++ b/liveMedia/include/RTSPRegisterSender.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "RTSPClient.hh"
+ #endif
+ 
+-class RTSPRegisterOrDeregisterSender: public RTSPClient {
++class LIVEMEDIA_API RTSPRegisterOrDeregisterSender: public RTSPClient {
+ public:
+   virtual ~RTSPRegisterOrDeregisterSender();
+ protected: // we're a virtual base class
+@@ -55,7 +55,7 @@ protected:
+ 
+ //////////
+ 
+-class RTSPRegisterSender: public RTSPRegisterOrDeregisterSender {
++class LIVEMEDIA_API RTSPRegisterSender: public RTSPRegisterOrDeregisterSender {
+ public:
+   static RTSPRegisterSender*
+   createNew(UsageEnvironment& env,
+@@ -100,7 +100,7 @@ public: // Some compilers complain if this is "protected:"
+ 
+ //////////
+ 
+-class RTSPDeregisterSender: public RTSPRegisterOrDeregisterSender {
++class LIVEMEDIA_API RTSPDeregisterSender: public RTSPRegisterOrDeregisterSender {
+ public:
+   static RTSPDeregisterSender*
+   createNew(UsageEnvironment& env,
+diff --git a/liveMedia/include/RTSPServer.hh b/liveMedia/include/RTSPServer.hh
+index 0b30a6c..0143527 100644
+--- a/liveMedia/include/RTSPServer.hh
++++ b/liveMedia/include/RTSPServer.hh
+@@ -28,7 +28,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "DigestAuthentication.hh"
+ #endif
+ 
+-class RTSPServer: public GenericMediaServer {
++class LIVEMEDIA_API RTSPServer: public GenericMediaServer {
+ public:
+   static RTSPServer* createNew(UsageEnvironment& env, Port ourPort = 554,
+ 			       UserAuthenticationDatabase* authDatabase = NULL,
+@@ -338,7 +338,7 @@ private:
+ 
+ ////////// A subclass of "RTSPServer" that implements the "REGISTER" command to set up proxying on the specified URL //////////
+ 
+-class RTSPServerWithREGISTERProxying: public RTSPServer {
++class LIVEMEDIA_API RTSPServerWithREGISTERProxying: public RTSPServer {
+ public:
+   static RTSPServerWithREGISTERProxying* createNew(UsageEnvironment& env, Port ourPort = 554,
+ 						   UserAuthenticationDatabase* authDatabase = NULL,
+diff --git a/liveMedia/include/RawVideoFrameParameters.hh b/liveMedia/include/RawVideoFrameParameters.hh
+index da56659..3a99475 100644
+--- a/liveMedia/include/RawVideoFrameParameters.hh
++++ b/liveMedia/include/RawVideoFrameParameters.hh
+@@ -21,7 +21,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #ifndef _RAW_VIDEO_FRAME_PARAMETERS_HH
+ #define _RAW_VIDEO_FRAME_PARAMETERS_HH
+ 
+-class RawVideoFrameParameters {
++class LIVEMEDIA_API RawVideoFrameParameters {
+ public:
+   RawVideoFrameParameters(unsigned width, unsigned height, unsigned depth, char const* sampling);
+   virtual ~RawVideoFrameParameters();
+diff --git a/liveMedia/include/RawVideoRTPSink.hh b/liveMedia/include/RawVideoRTPSink.hh
+index f11f2a7..e1c7bda 100644
+--- a/liveMedia/include/RawVideoRTPSink.hh
++++ b/liveMedia/include/RawVideoRTPSink.hh
+@@ -29,7 +29,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "RawVideoFrameParameters.hh"
+ #endif
+ 
+-class RawVideoRTPSink: public VideoRTPSink {
++class LIVEMEDIA_API RawVideoRTPSink: public VideoRTPSink {
+ public:
+   static RawVideoRTPSink*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs, u_int8_t rtpPayloadFormat,
+diff --git a/liveMedia/include/RawVideoRTPSource.hh b/liveMedia/include/RawVideoRTPSource.hh
+index 7600204..3dce771 100644
+--- a/liveMedia/include/RawVideoRTPSource.hh
++++ b/liveMedia/include/RawVideoRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class RawVideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API RawVideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static RawVideoRTPSource* createNew(UsageEnvironment& env, Groupsock* RTPgs,
+ 				      unsigned char rtpPayloadFormat,
+diff --git a/liveMedia/include/SIPClient.hh b/liveMedia/include/SIPClient.hh
+index 6a8c8f9..33c0e50 100644
+--- a/liveMedia/include/SIPClient.hh
++++ b/liveMedia/include/SIPClient.hh
+@@ -34,7 +34,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ // Possible states in the "INVITE" transition diagram (RFC 3261, Figure 5)
+ enum inviteClientState { Calling, Proceeding, Completed, Terminated };
+ 
+-class SIPClient: public Medium {
++class LIVEMEDIA_API SIPClient: public Medium {
+ public:
+   static SIPClient* createNew(UsageEnvironment& env,
+ 			      unsigned char desiredAudioRTPPayloadFormat,
+diff --git a/liveMedia/include/ServerMediaSession.hh b/liveMedia/include/ServerMediaSession.hh
+index c32290b..c7bcd51 100644
+--- a/liveMedia/include/ServerMediaSession.hh
++++ b/liveMedia/include/ServerMediaSession.hh
+@@ -28,9 +28,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "RTCP.hh"
+ #endif
+ 
+-class ServerMediaSubsession; // forward
++class LIVEMEDIA_API ServerMediaSubsession; // forward
+ 
+-class ServerMediaSession: public Medium {
++class LIVEMEDIA_API ServerMediaSession: public Medium {
+ public:
+   static ServerMediaSession* createNew(UsageEnvironment& env,
+ 				       char const* streamName = NULL,
+@@ -105,7 +105,7 @@ private:
+ };
+ 
+ 
+-class ServerMediaSubsessionIterator {
++class LIVEMEDIA_API ServerMediaSubsessionIterator {
+ public:
+   ServerMediaSubsessionIterator(ServerMediaSession& session);
+   virtual ~ServerMediaSubsessionIterator();
+@@ -119,7 +119,7 @@ private:
+ };
+ 
+ 
+-class ServerMediaSubsession: public Medium {
++class LIVEMEDIA_API ServerMediaSubsession: public Medium {
+ public:
+   unsigned trackNumber() const { return fTrackNumber; }
+   char const* trackId();
+diff --git a/liveMedia/include/SimpleRTPSink.hh b/liveMedia/include/SimpleRTPSink.hh
+index c01e814..3188f22 100644
+--- a/liveMedia/include/SimpleRTPSink.hh
++++ b/liveMedia/include/SimpleRTPSink.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSink.hh"
+ #endif
+ 
+-class SimpleRTPSink: public MultiFramedRTPSink {
++class LIVEMEDIA_API SimpleRTPSink: public MultiFramedRTPSink {
+ public:
+   static SimpleRTPSink*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/SimpleRTPSource.hh b/liveMedia/include/SimpleRTPSource.hh
+index fec9da4..a8c1e9f 100644
+--- a/liveMedia/include/SimpleRTPSource.hh
++++ b/liveMedia/include/SimpleRTPSource.hh
+@@ -29,7 +29,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class SimpleRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API SimpleRTPSource: public MultiFramedRTPSource {
+ public:
+   static SimpleRTPSource* createNew(UsageEnvironment& env, Groupsock* RTPgs,
+ 				    unsigned char rtpPayloadFormat,
+diff --git a/liveMedia/include/StreamReplicator.hh b/liveMedia/include/StreamReplicator.hh
+index aeada75..917d1dc 100644
+--- a/liveMedia/include/StreamReplicator.hh
++++ b/liveMedia/include/StreamReplicator.hh
+@@ -25,9 +25,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedSource.hh"
+ #endif
+ 
+-class StreamReplica; // forward
++class LIVEMEDIA_API StreamReplica; // forward
+ 
+-class StreamReplicator: public Medium {
++class LIVEMEDIA_API StreamReplicator: public Medium {
+ public:
+   static StreamReplicator* createNew(UsageEnvironment& env, FramedSource* inputSource, Boolean deleteWhenLastReplicaDies = True);
+     // If "deleteWhenLastReplicaDies" is True (the default), then the "StreamReplicator" object is deleted when (and only when)
+diff --git a/liveMedia/include/T140TextRTPSink.hh b/liveMedia/include/T140TextRTPSink.hh
+index b157e67..6574383 100644
+--- a/liveMedia/include/T140TextRTPSink.hh
++++ b/liveMedia/include/T140TextRTPSink.hh
+@@ -28,9 +28,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FramedFilter.hh"
+ #endif
+ 
+-class T140IdleFilter;
++class LIVEMEDIA_API T140IdleFilter;
+ 
+-class T140TextRTPSink: public TextRTPSink {
++class LIVEMEDIA_API T140TextRTPSink: public TextRTPSink {
+ public:
+   static T140TextRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
+ 
+@@ -63,7 +63,7 @@ protected:
+ // -  that delivers, to the "T140TextRTPSink", a continuous sequence of (possibly) empty frames.
+ // (Note: This class should be used only by "T140TextRTPSink", or a subclass.)
+ 
+-class T140IdleFilter: public FramedFilter {
++class LIVEMEDIA_API T140IdleFilter: public FramedFilter {
+ public:
+   T140IdleFilter(UsageEnvironment& env, FramedSource* inputSource);
+   virtual ~T140IdleFilter();
+diff --git a/liveMedia/include/TLSState.hh b/liveMedia/include/TLSState.hh
+index e622cff..b090ec8 100644
+--- a/liveMedia/include/TLSState.hh
++++ b/liveMedia/include/TLSState.hh
+@@ -34,7 +34,9 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include <openssl/ssl.h>
+ #endif
+ 
+-class TLSState {
++#include "export.h"
++
++class LIVEMEDIA_API TLSState {
+ public:
+   Boolean isNeeded;
+ 
+@@ -56,7 +58,7 @@ protected:
+ #endif
+ };
+ 
+-class ClientTLSState: public TLSState {
++class LIVEMEDIA_API ClientTLSState: public TLSState {
+ public:
+   ClientTLSState(class RTSPClient& client);
+   virtual ~ClientTLSState();
+@@ -72,7 +74,7 @@ private:
+ #endif
+ };
+ 
+-class ServerTLSState: public TLSState {
++class LIVEMEDIA_API ServerTLSState: public TLSState {
+ public:
+   ServerTLSState(UsageEnvironment& env);
+   virtual ~ServerTLSState();
+diff --git a/liveMedia/include/TextRTPSink.hh b/liveMedia/include/TextRTPSink.hh
+index d50e447..f1a3ec1 100644
+--- a/liveMedia/include/TextRTPSink.hh
++++ b/liveMedia/include/TextRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSink.hh"
+ #endif
+ 
+-class TextRTPSink: public MultiFramedRTPSink {
++class LIVEMEDIA_API TextRTPSink: public MultiFramedRTPSink {
+ protected:
+   TextRTPSink(UsageEnvironment& env,
+ 	      Groupsock* rtpgs, unsigned char rtpPayloadType,
+diff --git a/liveMedia/include/TheoraVideoRTPSink.hh b/liveMedia/include/TheoraVideoRTPSink.hh
+index 23f2040..213ffad 100644
+--- a/liveMedia/include/TheoraVideoRTPSink.hh
++++ b/liveMedia/include/TheoraVideoRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "VideoRTPSink.hh"
+ #endif
+ 
+-class TheoraVideoRTPSink: public VideoRTPSink {
++class LIVEMEDIA_API TheoraVideoRTPSink: public VideoRTPSink {
+ public:
+   static TheoraVideoRTPSink*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs, u_int8_t rtpPayloadFormat,
+diff --git a/liveMedia/include/TheoraVideoRTPSource.hh b/liveMedia/include/TheoraVideoRTPSource.hh
+index bee1d2f..d446c2c 100644
+--- a/liveMedia/include/TheoraVideoRTPSource.hh
++++ b/liveMedia/include/TheoraVideoRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class TheoraVideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API TheoraVideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static TheoraVideoRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/VP8VideoRTPSink.hh b/liveMedia/include/VP8VideoRTPSink.hh
+index 50a42db..ddeb341 100644
+--- a/liveMedia/include/VP8VideoRTPSink.hh
++++ b/liveMedia/include/VP8VideoRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "VideoRTPSink.hh"
+ #endif
+ 
+-class VP8VideoRTPSink: public VideoRTPSink {
++class LIVEMEDIA_API VP8VideoRTPSink: public VideoRTPSink {
+ public:
+   static VP8VideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
+ 
+diff --git a/liveMedia/include/VP8VideoRTPSource.hh b/liveMedia/include/VP8VideoRTPSource.hh
+index c00f29e..da516a3 100644
+--- a/liveMedia/include/VP8VideoRTPSource.hh
++++ b/liveMedia/include/VP8VideoRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class VP8VideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API VP8VideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static VP8VideoRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/VP9VideoRTPSink.hh b/liveMedia/include/VP9VideoRTPSink.hh
+index 7797143..989dc51 100644
+--- a/liveMedia/include/VP9VideoRTPSink.hh
++++ b/liveMedia/include/VP9VideoRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "VideoRTPSink.hh"
+ #endif
+ 
+-class VP9VideoRTPSink: public VideoRTPSink {
++class LIVEMEDIA_API VP9VideoRTPSink: public VideoRTPSink {
+ public:
+   static VP9VideoRTPSink* createNew(UsageEnvironment& env, Groupsock* RTPgs, unsigned char rtpPayloadFormat);
+ 
+diff --git a/liveMedia/include/VP9VideoRTPSource.hh b/liveMedia/include/VP9VideoRTPSource.hh
+index 5e48749..272875a 100644
+--- a/liveMedia/include/VP9VideoRTPSource.hh
++++ b/liveMedia/include/VP9VideoRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class VP9VideoRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API VP9VideoRTPSource: public MultiFramedRTPSource {
+ public:
+   static VP9VideoRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/VideoRTPSink.hh b/liveMedia/include/VideoRTPSink.hh
+index 7736495..ee372e0 100644
+--- a/liveMedia/include/VideoRTPSink.hh
++++ b/liveMedia/include/VideoRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSink.hh"
+ #endif
+ 
+-class VideoRTPSink: public MultiFramedRTPSink {
++class LIVEMEDIA_API VideoRTPSink: public MultiFramedRTPSink {
+ protected:
+   VideoRTPSink(UsageEnvironment& env,
+ 	       Groupsock* rtpgs, unsigned char rtpPayloadType,
+diff --git a/liveMedia/include/VorbisAudioRTPSink.hh b/liveMedia/include/VorbisAudioRTPSink.hh
+index d3de942..6fa85ba 100644
+--- a/liveMedia/include/VorbisAudioRTPSink.hh
++++ b/liveMedia/include/VorbisAudioRTPSink.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "AudioRTPSink.hh"
+ #endif
+ 
+-class VorbisAudioRTPSink: public AudioRTPSink {
++class LIVEMEDIA_API VorbisAudioRTPSink: public AudioRTPSink {
+ public:
+   static VorbisAudioRTPSink*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs, u_int8_t rtpPayloadFormat,
+diff --git a/liveMedia/include/VorbisAudioRTPSource.hh b/liveMedia/include/VorbisAudioRTPSource.hh
+index aae00bb..666b50a 100644
+--- a/liveMedia/include/VorbisAudioRTPSource.hh
++++ b/liveMedia/include/VorbisAudioRTPSource.hh
+@@ -25,7 +25,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "MultiFramedRTPSource.hh"
+ #endif
+ 
+-class VorbisAudioRTPSource: public MultiFramedRTPSource {
++class LIVEMEDIA_API VorbisAudioRTPSource: public MultiFramedRTPSource {
+ public:
+   static VorbisAudioRTPSource*
+   createNew(UsageEnvironment& env, Groupsock* RTPgs,
+diff --git a/liveMedia/include/WAVAudioFileServerMediaSubsession.hh b/liveMedia/include/WAVAudioFileServerMediaSubsession.hh
+index 7663f2c..b7a9f5c 100644
+--- a/liveMedia/include/WAVAudioFileServerMediaSubsession.hh
++++ b/liveMedia/include/WAVAudioFileServerMediaSubsession.hh
+@@ -26,7 +26,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ #include "FileServerMediaSubsession.hh"
+ #endif
+ 
+-class WAVAudioFileServerMediaSubsession: public FileServerMediaSubsession{
++class LIVEMEDIA_API WAVAudioFileServerMediaSubsession: public FileServerMediaSubsession{
+ public:
+   static WAVAudioFileServerMediaSubsession*
+   createNew(UsageEnvironment& env, char const* fileName, Boolean reuseFirstSource,
+diff --git a/liveMedia/include/WAVAudioFileSource.hh b/liveMedia/include/WAVAudioFileSource.hh
+index 502873e..c97e690 100644
+--- a/liveMedia/include/WAVAudioFileSource.hh
++++ b/liveMedia/include/WAVAudioFileSource.hh
+@@ -36,7 +36,7 @@ typedef enum {
+ } WAV_AUDIO_FORMAT;
+ 
+ 
+-class WAVAudioFileSource: public AudioInputDevice {
++class LIVEMEDIA_API WAVAudioFileSource: public AudioInputDevice {
+ public:
+ 
+   static WAVAudioFileSource* createNew(UsageEnvironment& env,
+diff --git a/liveMedia/include/export.h b/liveMedia/include/export.h
+new file mode 100644
+index 0000000..cb31423
+--- /dev/null
++++ b/liveMedia/include/export.h
+@@ -0,0 +1,30 @@
++#pragma once
++
++#ifdef __cplusplus
++extern "C" {
++#endif // #ifdef __cplusplus
++
++
++#if _WIN32
++#  define LIVEMEDIA_EXPORT_API __declspec (dllexport)
++#  define LIVEMEDIA_IMPORT_API __declspec (dllimport)
++#else // #if _WIN32
++#  define LIVEMEDIA_EXPORT_API __attribute__ ((visibility("default")))
++#  define LIVEMEDIA_IMPORT_API __attribute__ ((visibility("default")))
++#endif // #if _WIN32
++
++
++#ifndef LIVEMEDIA_STATIC
++#  ifdef LIVEMEDIA_EXPORTS
++#     define LIVEMEDIA_API LIVEMEDIA_EXPORT_API
++#  else
++#     define LIVEMEDIA_API LIVEMEDIA_IMPORT_API
++#  endif // #ifdef LIVEMEDIA_EXPORTS
++#else // #ifndef LIVEMEDIA_STATIC
++#  define LIVEMEDIA_API
++#endif // #ifndef LIVEMEDIA_STATIC
++
++
++#ifdef __cplusplus
++} // extern "C" {
++#endif // #ifdef __cplusplus
+diff --git a/liveMedia/include/uLawAudioFilter.hh b/liveMedia/include/uLawAudioFilter.hh
+index 2df1e24..9993b35 100644
+--- a/liveMedia/include/uLawAudioFilter.hh
++++ b/liveMedia/include/uLawAudioFilter.hh
+@@ -27,7 +27,7 @@ along with this library; if not, write to the Free Software Foundation, Inc.,
+ 
+ ////////// 16-bit PCM (in various byte orderings) -> 8-bit u-Law //////////
+ 
+-class uLawFromPCMAudioSource: public FramedFilter {
++class LIVEMEDIA_API uLawFromPCMAudioSource: public FramedFilter {
+ public:
+   static uLawFromPCMAudioSource*
+   createNew(UsageEnvironment& env, FramedSource* inputSource,
+@@ -65,7 +65,7 @@ private:
+ 
+ ////////// u-Law -> 16-bit PCM (in host order) //////////
+ 
+-class PCMFromuLawAudioSource: public FramedFilter {
++class LIVEMEDIA_API PCMFromuLawAudioSource: public FramedFilter {
+ public:
+   static PCMFromuLawAudioSource*
+   createNew(UsageEnvironment& env, FramedSource* inputSource);
+@@ -98,7 +98,7 @@ private:
+ 
+ ////////// 16-bit values (in host order) -> 16-bit network order //////////
+ 
+-class NetworkFromHostOrder16: public FramedFilter {
++class LIVEMEDIA_API NetworkFromHostOrder16: public FramedFilter {
+ public:
+   static NetworkFromHostOrder16*
+   createNew(UsageEnvironment& env, FramedSource* inputSource);
+@@ -126,7 +126,7 @@ private:
+ 
+ ////////// 16-bit values (in network order) -> 16-bit host order //////////
+ 
+-class HostFromNetworkOrder16: public FramedFilter {
++class LIVEMEDIA_API HostFromNetworkOrder16: public FramedFilter {
+ public:
+   static HostFromNetworkOrder16*
+   createNew(UsageEnvironment& env, FramedSource* inputSource);
+@@ -154,7 +154,7 @@ private:
+ 
+ ////////// 16-bit values: little-endian <-> big-endian //////////
+ 
+-class EndianSwap16: public FramedFilter {
++class LIVEMEDIA_API EndianSwap16: public FramedFilter {
+ public:
+   static EndianSwap16* createNew(UsageEnvironment& env, FramedSource* inputSource);
+ 
+@@ -181,7 +181,7 @@ private:
+ 
+ ////////// 24-bit values: little-endian <-> big-endian //////////
+ 
+-class EndianSwap24: public FramedFilter {
++class LIVEMEDIA_API EndianSwap24: public FramedFilter {
+ public:
+   static EndianSwap24* createNew(UsageEnvironment& env, FramedSource* inputSource);
+ 

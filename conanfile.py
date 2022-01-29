@@ -30,6 +30,7 @@ class Live555Conan(ConanFile):
         import common
         tools.patch(base_path=self.source_subfolder, patch_file='patches/increase_bank_size.patch')
         tools.patch(base_path=self.source_subfolder, patch_file='patches/fix_ifaddrs.patch')
+        tools.patch(base_path=self.source_subfolder, patch_file='patches/export_macros.patch')
 
         # Generate Cmake wrapper
         common.generate_cmake_wrapper(
