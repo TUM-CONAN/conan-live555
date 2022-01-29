@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 4b23e08..f188626 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -27,7 +27,7 @@ include_directories ( ${${PROJECT_NAME}_HOME}/liveMedia/include )
+ 
+ if ( WIN32 )
+    list ( APPEND ${PROJECT_NAME}_DEFINITIONS
+-      -DWINNT
++	   -DWINNT -DNO_GETIFADDRS
+    )
+ else ()
+    list ( APPEND ${PROJECT_NAME}_DEFINITIONS
