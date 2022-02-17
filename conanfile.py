@@ -4,7 +4,7 @@ import os
 
 class Live555Conan(ConanFile):
     name = "live555"
-    package_revision = ""
+    package_revision = "-r1"
     upstream_version = "2022.01.11"
     version = "{0}{1}".format(upstream_version, package_revision)
     generators = "cmake"
